@@ -57,7 +57,7 @@ jugador.llevaLuz = function() {
 var objBrujula = ctrl.creaObj(
 	"brujula",
 	[ "compas", "brujula" ],
-	"Tu fiable br&uacute;jula.",
+	"Tu fiable reloj con br&uacute;jula.",
     jugador,
 	Ent.Portable
 );
