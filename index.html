@@ -29,10 +29,10 @@
                         <tr>
                                 <td align="left">
                                 <map name="compas_map">
-                                        <area shape="rect" coords="20,0,60,25" href="javascript:ctrl.inject('s')">
+                                        <area shape="rect" coords="20,0,60,25" href="javascript:ctrl.inject('n')">
                                         <area shape="rect" coords="0,30,25,60" href="javascript:ctrl.inject('o')">
                                         <area shape="rect" coords="60,30,85,60" href="javascript:ctrl.inject('e')">
-                                        <area shape="rect" coords="30,60,60,85" href="javascript:ctrl.inject('n')">
+                                        <area shape="rect" coords="30,60,60,85" href="javascript:ctrl.inject('s')">
                                 </map>
                               <img src="res/compas.png" usemap="#compas_map"></td>
                               <td align="center" rowspan="2"><div id="dvPic"></div></td>
@@ -65,33 +65,38 @@
                 <div id="dvActions">
                     <table><tr>
                     <td>
-                        <img id="btInv" alt="inv" width="16" height="16"
+                        <img id="btInv" alt="inventory" width="16" height="16"
                                         style="vertical-align:middle;"
                                         src="res/inv.png"
+                                        title="inventory"
                                         onClick="ctrl.inject( 'inv' ); return false;">
                         </td>
                         <td>
-                        <img id="btEx" alt="ex" width="16" height="16"
+                        <img id="btEx" alt="examine" width="16" height="16"
                                         style="vertical-align:middle;"
                                         src="res/ex.png"
+                                        title="examine"
                                         onClick="ctrl.inject( 'examina ', false ); return false;">
                         </td>
                         <td>
                         <img id="btExits" alt="exits" width="16" height="16"
                                         style="vertical-align:middle;"
                                         src="res/compass.png"
+                                        title="exits"
                                         onClick="ctrl.inject( 'exits' ); return false;">
                         </td>
                         <td>
                         <img id="btTake" alt="take" width="24" height="24"
                                         style="vertical-align:middle;"
                                         src="res/take.png"
+                                        title="take"
                                         onClick="ctrl.inject( 'coge ', false ); return false;">
                         </td>
                         <td>
                         <img id="btDrop" alt="drop" width="24" height="24"
                                         style="vertical-align:middle;"
                                         src="res/drop.png"
+                                        title="drop"
                                         onClick="ctrl.inject( 'deja ', false ); return false;">
                     </td>
                     </tr></table>

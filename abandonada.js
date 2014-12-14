@@ -26,7 +26,7 @@ Loc.prototype.hayLuz = function() {
 var locExterior = ctrl.lugares.creaLoc(
     "Pequeño claro en el bosque",
     [ "claro", "bosque" ],
-    "Frente a ti, una casa."
+    "Frente a ti, una ${casa, ex casa}."
 );
 locExterior.pic = "res/abandonada.png";
 
@@ -43,9 +43,9 @@ objCasa.preEnter = function() {
 }
 
 // --- Jugador ---------------------------------------------------------
-var jugador = ctrl.personas.creaPersona( "Howard Carter",
-                    [ "howard", "carter", "explorador" ],
-                    "Howard Carter, un Arque&oacute;logo experto en el mundo egipcio.",
+var jugador = ctrl.personas.creaPersona( "Alguien",
+                    [ "hombre" ],
+                    "Un hombre... ¿normal?.",
                     locExterior
 );
 
