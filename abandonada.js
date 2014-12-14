@@ -46,7 +46,7 @@ objCasa.preEnter = function() {
 var jugador = ctrl.personas.creaPersona( "Howard Carter",
                     [ "howard", "carter", "explorador" ],
                     "Howard Carter, un Arque&oacute;logo experto en el mundo egipcio.",
-                    locDesierto
+                    locExterior
 );
 
 jugador.llevaLuz = function() {
