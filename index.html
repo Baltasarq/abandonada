@@ -7,6 +7,44 @@
         <script type="text/javascript" src="https://rawgit.com/Baltasarq/fi-js/master/verbs.js"></script>
         <script type="text/javascript" src="abandonada.js"></script>
         <title>Abandonada</title>
+        <script type="text/javascript">
+			function updateObjects()
+			{
+				var dvObjects = document.getElementById( "dvObjects" );
+				var inventory = ctrl.personas.getPlayer().objs;
+				var reachable = ctrl.lugares.getCurrentLoc().objs;
+                                var personas = ctrl.lugares.getCurrentLoc().personas;
+
+				dvObjects.innerHTML = "";
+                                for(var i = 0; i < personas.length; ++i) {
+                                        if ( personas[ i ] != ctrl.personas.getPlayer() ) {
+                                                dvObjects.innerHTML +=
+                                                        "<a href=\"javascript:ctrl.inject(' "
+                                                        + personas[ i ].id
+                                                        + "', true, false);\">"
+                                                        + personas[ i ].id + "</a>  ";
+                                        }
+				}
+
+				for(var i = 0; i < inventory.length; ++i) {
+					dvObjects.innerHTML +=
+						"<a href=\"javascript:ctrl.inject(' "
+						+ inventory[ i ].id
+						+ "', true, false);\">"
+						+ inventory[ i ].id + "</a>  ";
+				}
+
+				for(var i = 0; i < reachable.length; ++i) {
+					dvObjects.innerHTML +=
+						"<a href=\"javascript:ctrl.inject(' "
+						+ reachable[ i ].id
+						+ "', true, false);\">"
+						+ reachable[ i ].id + "</a>  ";
+				}
+
+				return;
+			}
+        </script>
     </head>
     <body>
         <div id="dvTop">
@@ -50,12 +88,12 @@
                     <form id="frmInput" action="submit" onsubmit="return parser.doParse();">
                         <td align="left">
                         &gt; <input type="text" class="txt" size="40"
-                                maxLength="80" id="edInput" readonly="true"
+                                maxLength="80" id="edInput"
                                 style="width:85%;color:black;background-color:white;border:none">
                         </td>
                         <td>
                             <input  id="btSend" type="button"
-                                    onClick="return parser.doParse()" style="display:none"/>
+                                    onClick="toret=parser.doParse();updateObjects();return toret;" style="display:none"/>
                             <input id="btReset" type="button" style="display:none"/>
                         </td>
                     </form>
@@ -63,43 +101,134 @@
                 </div>
                 <div id="dvError">
                 </div>
+                <hr>
+                <p></p>
+                <div id="dvObjects">
+                </div>
                 <div id="dvActions">
                     <table><tr>
                     <td>
-                        <img id="btInv" alt="inventory" width="16" height="16"
+                        <img id="btInv" alt="inventario" width="32" height="32"
                                         style="vertical-align:middle;"
                                         src="res/inv.png"
-                                        title="inventory"
+                                        title="inventorio"
                                         onClick="ctrl.inject( 'inv' ); return false;">
                         </td>
                         <td>
-                        <img id="btEx" alt="examine" width="16" height="16"
+                        <img id="btEx" alt="examina" width="32" height="32"
                                         style="vertical-align:middle;"
                                         src="res/ex.png"
-                                        title="examine"
+                                        title="examina"
                                         onClick="ctrl.inject( 'examina ', false ); return false;">
                         </td>
                         <td>
-                        <img id="btExits" alt="exits" width="16" height="16"
+                        <img id="btExits" alt="salidas" width="32" height="32"
                                         style="vertical-align:middle;"
                                         src="res/compass.png"
-                                        title="exits"
+                                        title="salidas"
                                         onClick="ctrl.inject( 'exits' ); return false;">
                         </td>
                         <td>
-                        <img id="btTake" alt="take" width="24" height="24"
+                        <img id="btTake" alt="coge" width="48" height="48"
                                         style="vertical-align:middle;"
                                         src="res/take.png"
-                                        title="take"
+                                        title="coge"
                                         onClick="ctrl.inject( 'coge ', false ); return false;">
                         </td>
                         <td>
-                        <img id="btDrop" alt="drop" width="24" height="24"
+                        <img id="btDrop" alt="deja" width="48" height="48"
                                         style="vertical-align:middle;"
                                         src="res/drop.png"
-                                        title="drop"
+                                        title="deja"
                                         onClick="ctrl.inject( 'deja ', false ); return false;">
-                    </td>
+						</td>
+						<td>
+                        <img id="btDisrobe" alt="quitarse" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/disrobe.png"
+                                        title="quitarse"
+                                        onClick="ctrl.inject( 'quitate ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btWear" alt="ponerse" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/wear.png"
+                                        title="ponerse"
+                                        onClick="ctrl.inject( 'ponte ', false ); return false;">
+                        </td>
+                        </tr>
+                        <tr>
+                        <td>
+                        <img id="btOpen" alt="abre" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/open.png"
+                                        title="abre"
+                                        onClick="ctrl.inject( 'abre ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btClose" alt="cierra" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/close.png"
+                                        title="cierra"
+                                        onClick="ctrl.inject( 'cierra ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btHit" alt="golpea" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/hit.png"
+                                        title="golpea"
+                                        onClick="ctrl.inject( 'golpea ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btPush" alt="empuja" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/push.png"
+                                        title="empuja"
+                                        onClick="ctrl.inject( 'empuja ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btPull" alt="tira de" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/pull.png"
+                                        title="tira de"
+                                        onClick="ctrl.inject( 'tira de ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btTalk" alt="habla con" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/talk.png"
+                                        title="habla con"
+                                        onClick="ctrl.inject( 'habla con ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btGive" alt="dar" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/give.png"
+                                        title="dar"
+                                        onClick="ctrl.inject( 'dar ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btTurnOn" alt="enciende" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/turnOn.png"
+                                        title="enciende"
+                                        onClick="ctrl.inject( 'enciende ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btTurnOff" alt="apaga" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/turnOff.png"
+                                        title="apaga"
+                                        onClick="ctrl.inject( 'apaga ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btHave" alt="come" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/have.png"
+                                        title="come"
+                                        onClick="ctrl.inject( 'come ', false ); return false;">
+                        </td>
+
                     </tr></table>
                 </div>
         </div>
