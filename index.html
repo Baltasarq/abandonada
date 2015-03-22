@@ -7,6 +7,7 @@
         <script type="text/javascript" src="https://rawgit.com/Baltasarq/fi-js/master/verbs.js"></script>
         <script type="text/javascript" src="abandonada.js"></script>
         <title>Abandonada</title>
+        <link href="fijs.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript">
 			function updateObjects()
 			{
@@ -85,7 +86,7 @@
                 <p>
                 <div id="dvInput" style="width:100%;display:block">
                     <table width="100%"><tr>
-                    <form id="frmInput" action="submit" onsubmit="return parser.doParse();">
+                    <form id="frmInput" action="submit" onsubmit="toret = parser.doParse();updateObjects();return toret;">
                         <td align="left">
                         &gt; <input type="text" class="txt" size="40"
                                 maxLength="80" id="edInput"
@@ -93,7 +94,7 @@
                         </td>
                         <td>
                             <input  id="btSend" type="button"
-                                    onClick="toret=parser.doParse();updateObjects();return toret;" style="display:none"/>
+                                    onClick="toret = parser.doParse();updateObjects();return toret;" style="display:none"/>
                             <input id="btReset" type="button" style="display:none"/>
                         </td>
                     </form>
