@@ -496,7 +496,8 @@ var locEscalerasInteriores = ctrl.lugares.creaLoc(
     [ "escaleras" ],
     "Las escaleras permiten ${subir, sube} a la primera planta, y \
      ${bajar, baja} al sótano. Allá abajo todo está oscuro, la luz parece \
-     incapaz de penetrar allá abajo. Por otra parte, en el piso superior \
+     incapaz de penetrar las profundidades. \
+     Por otra parte, en el piso superior \
      parece entrar la luz a raudales. Mientras la \
      barandilla es de madera, el resto de las escaleras están hechas de \
      cemento, que se muestra húmedo y mohoso."
@@ -781,24 +782,28 @@ var objBarra = ctrl.creaObj(
 var locSotano = ctrl.lugares.creaLoc(
     "Sótano",
     [ "sotano", "bodega", "estancia", "habitacion" ],
-    "Las escaleras permiten ${subir, sube} a la planta baja. Aquí la \
-     sensación de humedad es mucho más marcada que antes, y está \
+    "Las ${escaleras, ex escaleras} permiten ${subir, sube} a la \
+     planta baja. Aquí la sensación de humedad \
+     es mucho más marcada que antes, y está \
      bastante oscuro. En el extremo más alejado de las escaleras, al \
      ${este, e}, hay una ${puerta, ex puerta}."
 );
 locSotano.pic = "res/puerta.jpg";
 locSotano.ponSalidaBi( "arriba", locEscalerasInteriores );
 locSotano.objs.push( objParedes );
+
 locSotano.preGo = function() {
 	var toret = "";
 	var sentencia = parser.sentence;
 	
-	if ( sentencia.term1 == "este"
-	  && !objPuertaSotano.abierta )
-	{
-		toret = "La puerta está cerrada, no puedes seguir.";
+	if ( sentencia.term1 == "este" ) {
+		if ( !objPuertaSotano.abierta ) {
+			toret = "La puerta está cerrada, no puedes seguir.";
+		} else {
+			toret = goAction.exe( sentencia, locSotano );
+		}
 	} else {
-		toret = goAction.exe( sentencia, locPasillo );
+		toret = goAction.exe( sentencia, locSotano );
 	}
 	
 	return toret;
@@ -811,6 +816,10 @@ var objEscalerasSotano = ctrl.creaObj(
 	locSotano,
 	Ent.Escenario
 );
+
+objEscalerasSotano.preClimb = function() {
+	return actions.execute( "go", "arriba" );
+}
 
 var objPuertaSotano = ctrl.creaObj(
 	"puerta",
@@ -831,6 +840,7 @@ objPuertaSotano.preExamine = function() {
 	
 	return toret;
 }
+
 objPuertaSotano.preOpen = function() {
 	var toret = "Ya estaba abierta.";
 	
@@ -853,15 +863,50 @@ objPuertaSotano.preOpen = function() {
 	return toret;
 }
 
+objPuertaSotano.prePull = function() {
+	var toret = "";
+
+	if ( objPuertaSotano.abierta ) {
+		toret = "La puerta se mueve con bastante suavidad.";
+	} else {
+		toret = "Está cerrada, no basta con tirar.";
+	}
+
+	return toret;
+}
+
+objPuertaSotano.preClose = function() {
+	var toret = "Ya estaba cerrada.";
+	
+	if ( objPuertaSotano.abierta ) {
+		toret = "Empujas la puerta hasta que se cierra.";
+		objPuertaSotano.abierta = false;
+	}
+	
+	return toret;
+}
+
+objPuertaSotano.prePush = function() {
+	actions.execute( "close", "puerta" );
+}
+
 var locPasillo = ctrl.lugares.creaLoc(
     "Pasillo",
     [ "pasaje", "subterraneo" ],
     "El pasillo se extiende de ${oeste, o} a ${este, e}. En el extremo \
-     más alejado, hay una ${puerta, ex puerta}."
+     ${oeste, o}, hay una ${puerta, ex puerta}."
 );
 locPasillo.pic = "res/pasillo-oscuro.jpg";
 locPasillo.ponSalidaBi( "oeste", locSotano );
 locPasillo.objs.push( objParedes );
+
+var objPuertaSotanoFalsa = ctrl.creaObj(
+	"puerta",
+	[ "hoja" ],
+	"Una puerta blanca, bastante sucia. Está abierta.",
+	locPasillo,
+	Ent.Escenario
+);
 
 // --- Jugador ---------------------------------------------------------
 var jugador = ctrl.personas.creaPersona( "Alguien",
