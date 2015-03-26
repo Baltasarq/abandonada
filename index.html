@@ -51,7 +51,7 @@
         <div id="dvTop">
                 <table width="100%"><tr>
                         <td align="left"><div id="dvTitle"></div></td>
-                        <td align="right"><div style="font-style:italic; color:gray" id="dvId"></div></td>
+                        <td align="right"><div id="dvId"></div></td>
                 </tr></table>
         </div>
         <div id="dvIntro" style="display:block" onSubmit="return ctrl.boot();">
@@ -89,8 +89,7 @@
                     <form id="frmInput" action="submit" onsubmit="toret = parser.doParse();updateObjects();return toret;">
                         <td align="left">
                         &gt; <input type="text" class="txt" size="40"
-                                maxLength="80" id="edInput"
-                                style="width:85%;color:black;background-color:white;border:none">
+                                maxLength="80" id="edInput">
                         </td>
                         <td>
                             <input  id="btSend" type="button"
@@ -156,6 +155,13 @@
                                         src="res/wear.png"
                                         title="ponerse"
                                         onClick="ctrl.inject( 'ponte ', false ); return false;">
+                        </td>
+                        <td>
+						<img id="btThrow" alt="tirar" width="32" height="32"
+                                        style="vertical-align:middle;"
+                                        src="res/throw.png"
+                                        title="tirar"
+                                        onClick="ctrl.inject( 'tira ', false ); return false;">
                         </td>
                         </tr>
                         <tr>
