@@ -48,9 +48,10 @@ var objCasa = ctrl.creaObj(
 
 var objFurgona = ctrl.creaObj(
         "furgoneta",
-        [ "furgoneta", "furgona", "van", "coche" ],
+        [ "furgoneta", "furgona", "van", "coche", "barro" ],
         "Tu furgoneta de trabajo, blanca con el logo en grandes letras \
-        negras a lo largo del lateral trasero: 'Psico-investigaciones'.",
+        negras a lo largo del lateral trasero: 'Psico-investigaciones'. \
+        El trayecto hasta aquí ha teñido los bajos de barro.",
         locExterior,
         Ent.Escenario
 );
@@ -232,6 +233,7 @@ var locGaraje = ctrl.lugares.creaLoc(
     "Al ${este, este} se encuentra la explanada junto a la casa. \
      El garaje ha pasado definitivamente días mejores: los arbustos lo \
      han invadido todo, junto con el musgo y las enredaderas. \
+     La humedad provoca una fuerte sensación de frío y desamparo. \
      Parece como si hubiera querido devorar el ${coche, ex coche} en su \
      ya verde interior."
 );
@@ -308,7 +310,7 @@ objCoche.preExamine = function() {
 		if ( ctrl.lugares.limbo.has( objLlaves ) ) {
 			objLlaves.mueveA( objCoche );
 		}
-		
+
         toret = examineAction.exe( parser.sentence );
     }
 
@@ -329,14 +331,14 @@ locPorche.ponSalidaBi( "norte", locExterior );
 locPorche.visitas = 0;
 locPorche.preLook = function() {
 	var toret = locPorche.desc;
-	
+
 	++locPorche.visitas;
 	if ( locPorche.visitas < 3 ) {
 		toret += " Supones que tus clientes habrán de tener mucho \
 				  dinero y paciencia para permitirse invertir aquí y, \
 				  con mucho tiempo, tornarlo habitable."
 	}
-	
+
 	return toret;
 }
 
@@ -391,9 +393,9 @@ objPuerta.prePull = function() {
 locCocina = ctrl.lugares.creaLoc(
     "Cocina",
     [ "habitacion", "sala", "estancia" ],
-    "Una cocina llena de ${cascotes, ex cascotes}. La luz entra por un \
-     par de ${ventanas, ex ventanas}, que alegran una estancia un tanto \
-     desolada. Una ${despensa, ex despensa}, una ${encimera, ex encimera} \
+    "Una cocina asolada y llena de ${cascotes, ex cascotes}. La luz entra por un \
+     par de ${ventanas, ex ventanas}, que alegran un tanto una estancia tan devastada. \
+     Una ${despensa, ex despensa}, una ${encimera, ex encimera} \
      con ${horno, ex horno}, y un ${radiador, ex radiador} es lo \
      poco que queda en pie."
 );
@@ -493,14 +495,14 @@ objHorno.preShutdown = function() {
 
 var locEscalerasInteriores = ctrl.lugares.creaLoc(
     "Escaleras interiores",
-    [ "escaleras" ],
+    [ "escaleras", "peldanos", "escalera", "peldano" ],
     "Las escaleras permiten ${subir, sube} a la primera planta, y \
      ${bajar, baja} al sótano. Allá abajo todo está oscuro, la luz parece \
      incapaz de penetrar las profundidades. \
      Por otra parte, en el piso superior \
-     parece entrar la luz a raudales. Mientras la \
-     barandilla es de madera, el resto de las escaleras están hechas de \
-     cemento, que se muestra húmedo y mohoso."
+     es como si entrara la luz a raudales. Mientras la \
+     barandilla es de madera, los peldaños están hechos de \
+     cemento, que se muestra muy húmedo y mohoso."
 );
 locEscalerasInteriores.pic = "res/escaleras_interiores.jpg";
 locEscalerasInteriores.ponSalidaBi( "norte", locCocina );
@@ -516,7 +518,9 @@ locDesvan = ctrl.lugares.creaLoc(
      ${chimenea, ex chimenea} ocupa la totalidad de la pared que no \
      está cubierta por ${muebles, ex muebles}. Cerca del hogar, hay \
      una ${estufa, ex estufa}, y en la pared lateral, una \
-     ${ventana, ex ventana}."
+     ${ventana, ex ventana}. La polvorienta estancia está llena de \
+     telas de araña, y supones que en cualquier rincón puede haber un \
+     nido de todo tipo de bichos."
 );
 locDesvan.pic = "res/desvan.jpg";
 locDesvan.ponSalidaBi( "abajo", locEscalerasInteriores );
@@ -795,7 +799,7 @@ locSotano.objs.push( objParedes );
 locSotano.preGo = function() {
 	var toret = "";
 	var sentencia = parser.sentence;
-	
+
 	if ( sentencia.term1 == "este" ) {
 		if ( !objPuertaSotano.abierta ) {
 			toret = "La puerta está cerrada, no puedes seguir.";
@@ -805,7 +809,7 @@ locSotano.preGo = function() {
 	} else {
 		toret = goAction.exe( sentencia, locSotano );
 	}
-	
+
 	return toret;
 }
 
@@ -831,19 +835,19 @@ var objPuertaSotano = ctrl.creaObj(
 objPuertaSotano.abierta = false;
 objPuertaSotano.preExamine = function() {
 	var toret = objPuertaSotano.desc;
-	
+
 	if ( objPuertaSotano.abierta ) {
 		toret += " Está abierta.";
 	} else {
 		toret += " Está cerrada.";
 	}
-	
+
 	return toret;
 }
 
 objPuertaSotano.preOpen = function() {
 	var toret = "Ya estaba abierta.";
-	
+
 	if ( !objPuertaSotano.abierta ) {
 		if ( ctrl.isPresent( objLlaves ) ) {
 			if ( ctrl.isPresent( objAceite ) ) {
@@ -859,7 +863,7 @@ objPuertaSotano.preOpen = function() {
 			toret = "No se abre, está cerrada con llave.";
 		}
 	}
-	
+
 	return toret;
 }
 
@@ -877,12 +881,12 @@ objPuertaSotano.prePull = function() {
 
 objPuertaSotano.preClose = function() {
 	var toret = "Ya estaba cerrada.";
-	
+
 	if ( objPuertaSotano.abierta ) {
 		toret = "Empujas la puerta hasta que se cierra.";
 		objPuertaSotano.abierta = false;
 	}
-	
+
 	return toret;
 }
 

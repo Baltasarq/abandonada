@@ -122,3 +122,9 @@ a:visited {
 	font-familiy:Verdana,Arial,Helvetica;
 	font-size:24px;
 }
+
+#dvObjects {
+        font-family: monospace;
+        font-size: 16pt;
+        text-align: center
+}

@@ -9,42 +9,80 @@
         <title>Abandonada</title>
         <link href="fijs.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript">
+                        var prepBuildingOrder = "";
+
 			function updateObjects()
 			{
 				var dvObjects = document.getElementById( "dvObjects" );
 				var inventory = ctrl.personas.getPlayer().objs;
 				var reachable = ctrl.lugares.getCurrentLoc().objs;
                                 var personas = ctrl.lugares.getCurrentLoc().personas;
+                                var pObjects = document.createElement( "p" );
+				var strEntitiesList = "";
 
-				dvObjects.innerHTML = "";
-                                for(var i = 0; i < personas.length; ++i) {
-                                        if ( personas[ i ] != ctrl.personas.getPlayer() ) {
-                                                dvObjects.innerHTML +=
-                                                        "<a href=\"javascript:ctrl.inject(' "
-                                                        + personas[ i ].id
-                                                        + "', true, false);\">"
-                                                        + personas[ i ].id + "</a>  ";
+                                if ( personas.length > 1 ) {
+                                        strEntitiesList += "/ ";
+                                        for(var i = 0; i < personas.length; ++i) {
+                                                if ( personas[ i ] != ctrl.personas.getPlayer() ) {
+                                                        strEntitiesList +=
+                                                                "<a href=\"javascript:addTerm('"
+                                                                + personas[ i ].id
+                                                                + "');\">"
+                                                                + personas[ i ].id
+                                                                + "</a>  / ";
+                                                }
                                         }
-				}
 
-				for(var i = 0; i < inventory.length; ++i) {
-					dvObjects.innerHTML +=
-						"<a href=\"javascript:ctrl.inject(' "
-						+ inventory[ i ].id
-						+ "', true, false);\">"
-						+ inventory[ i ].id + "</a>  ";
-				}
 
-				for(var i = 0; i < reachable.length; ++i) {
-					dvObjects.innerHTML +=
-						"<a href=\"javascript:ctrl.inject(' "
-						+ reachable[ i ].id
-						+ "', true, false);\">"
-						+ reachable[ i ].id + "</a>  ";
-				}
+                                        strEntitiesList += "<br />";
+                                }
+
+                                if ( inventory.length > 0 ) {
+                                        strEntitiesList += "/ ";
+                                        for(var i = 0; i < inventory.length; ++i) {
+                                                strEntitiesList +=
+                                                        "<a href=\"javascript:addTerm('"
+                                                        + inventory[ i ].id
+                                                        + "');\">"
+                                                        + inventory[ i ].id
+                                                        + "</a>  / ";
+                                        }
+
+                                        strEntitiesList += "<br />";
+                                }
+
+
+                                if ( reachable.length > 0 ) {
+                                        strEntitiesList += "/ ";
+                                        for(var i = 0; i < reachable.length; ++i) {
+                                                strEntitiesList +=
+                                                        "<a href=\"javascript:addTerm('"
+                                                        + reachable[ i ].id
+                                                        + "');\">"
+                                                        + reachable[ i ].id
+                                                        + "</a>  / ";
+                                        }
+                                }
+
+                                dvObjects.innerHTML = "";
+                                dvObjects.appendChild( pObjects );
+                                pObjects.innerHTML = strEntitiesList;
 
 				return;
 			}
+
+                        function addTerm(w)
+                        {
+                                var doEnter = ( prepBuildingOrder.length == 0 );
+
+                                ctrl.inject( w, doEnter, false );
+
+                                if ( !doEnter ) {
+                                        ctrl.inject( prepBuildingOrder, false, false );
+                                }
+
+                                prepBuildingOrder = "";
+                        }
         </script>
     </head>
     <body>
@@ -106,7 +144,7 @@
                 <div id="dvObjects">
                 </div>
                 <div id="dvActions">
-                    <table><tr>
+                    <table align="center"><tr>
                     <td>
                         <img id="btInv" alt="inventario" width="32" height="32"
                                         style="vertical-align:middle;"
@@ -126,7 +164,7 @@
                                         style="vertical-align:middle;"
                                         src="res/compass.png"
                                         title="salidas"
-                                        onClick="ctrl.inject( 'exits' ); return false;">
+                                        onClick="ctrl.inject( 'salidas' ); return false;">
                         </td>
                         <td>
                         <img id="btTake" alt="coge" width="48" height="48"
@@ -161,12 +199,12 @@
                                         style="vertical-align:middle;"
                                         src="res/throw.png"
                                         title="tirar"
-                                        onClick="ctrl.inject( 'tira ', false ); return false;">
+                                        onClick="prepBuildingOrder = ' a '; ctrl.inject( 'lanza ', false ); return false;">
                         </td>
                         </tr>
                         <tr>
                         <td>
-                        <img id="btOpen" alt="abre" width="32" height="32"
+                                                <img id="btOpen" alt="abre" width="32" height="32"
                                         style="vertical-align:middle;"
                                         src="res/open.png"
                                         title="abre"
@@ -212,7 +250,7 @@
                                         style="vertical-align:middle;"
                                         src="res/give.png"
                                         title="dar"
-                                        onClick="ctrl.inject( 'dar ', false ); return false;">
+                                        onClick="prepBuildingOrder = ' a '; ctrl.inject( 'dale ', false ); return false;">
                         </td>
                         <td>
 						<img id="btTurnOn" alt="enciende" width="32" height="32"
@@ -239,9 +277,5 @@
                     </tr></table>
                 </div>
         </div>
-        <script>
-            ctrl.start();
-            document.getElementById( "btBoot" ).focus();
-        </script>
     </body>
 </html>
