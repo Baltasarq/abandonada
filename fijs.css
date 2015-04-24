@@ -1,12 +1,12 @@
 /* Default colors and sizes */
 body {
-	background-color:black;
-	color:white;
-	font-familiy:Verdana,Arial,Helvetica;
-	font-size:20px;
+	background-color: black;
+	color: white;
+	font-familiy: serif;
+	font-size: 16pt
 }
 
-/* Hiperenlaces */
+/* Hyperlinks */
 a {
 	color:#77aabb;
 	text-decoration:none
@@ -24,93 +24,86 @@ a:visited {
 
 /* Intro div, before game */
 #dvIntro {
-	text-align:center
+	text-align: center
 }
 
 #hrIntroSeparator {
-	color:#000044;
+	color: #000044;
 	background-color: #000044;
-	height:3px;
-	border:0
+	height: 3px;
+	border: 0
 }
 
 #btBoot {
-	color:#770000;
-	font-weight:bold
+	color: #770000;
+	font-weight: bold
 }
 
 /* Game title */
 #dvTitle {
-	font-size:28px;
-	color:lightgray
+	font-size: 18pt;
+	color: lightgray
 }
 
 /* Game div */
 #dvFi {
-	width:100%;
-	height:10%
+	width: 100%
 }
 
 #hrFiSeparator {
-	color:#000044;
-	background-color:#000044;
-	height:3px;
-	border:0
+	color: #000044;
+	background-color: #000044;
+	height: 3px;
+	border: 0
 }
 
 /* Name of the room */
 #dvId {
-	width:100%;
-	height:10%;
-	color:#77aaff;
-	font-familiy:Verdana,Arial,Helvetica;
-	font-size:22px;
-	font-style:italic
+	width: 100%;
+	height: 10%;
+	color: #77aaff;
+	font-style: italic;
+	font-weight: bold
 }
 
 /* Image */
 #dvPic {
-	width:100%;
-	height:40%;
-	text-align:center
+	width: 100%;
+	height: 40%;
+	text-align: center
 }
 
 /* Description text for current room */
 #dvDesc  {
 	color: green;
-	width:100%;
-	height:10%;
-	font-familiy: Verdana,Arial,Helvetica;
-	font-size:22px;
+	width: 100%;
+	height: 10%
 }
 
 /* Game's answer text */
 #dvAnswer {
 	width:100%;
 	height:10%;
-	font-familiy: Verdana,Arial,Helvetica;
-	font-size:20px;
+	font-size:14pt;
 }
 
 /* Input section, prompt, icons... */
 #dvInput {
-	color:white;
-	background-color:black;
-	width:100%;
-	height:10%;
-	font-familiy: Verdana,Arial,Helvetica;
-	font-size:20px;
+	color: white;
+	background-color: black;
+	width: 100%;
+	height: 10%;
 }
 
 #edInput{
-	width:85%;
-	color:white;
-	background-color:black;
-	border:none;
-	font-size:20px;
-	border:1px dotted gray;
+	width: 90%;
+	color: khaki;
+	background-color: black;
+	border: none;
+	border: 1px dotted gray;
 	border-radius: 10px;
-	padding:6px
+	font-family: monospace;
+	padding: 6px
 }
 
 /* Error section, this is normally not seen by players */
@@ -119,12 +112,16 @@ a:visited {
 	background-color:red;
 	width:100%;
 	height:10%;
-	font-familiy:Verdana,Arial,Helvetica;
-	font-size:24px;
+	font-size:24pt;
 }
 
 #dvObjects {
-        font-family: monospace;
-        font-size: 16pt;
-        text-align: center
+    font-family: monospace;
+    font-size: 16pt;
+    cursor: crosshair;
+    text-align: center
+}
+
+#dvActions {
+	cursor: crosshair
 }

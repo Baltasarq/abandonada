@@ -8,10 +8,10 @@
  */
 
 ctrl.ponTitulo( "Abandonada" );
-ctrl.ponIntro( "<p align='justify'>Como agente de Psico-investigaciones, \
+ctrl.ponIntro( "Como agente de Psico-investigaciones, \
                 tu labor consiste en descartar \
                 los rumores sobre el encantamiento de esta gran casa. \
-                Así, tus clientes podr&aacute;n comprarla sin temor.</p>" );
+                Así, tus clientes podr&aacute;n comprarla sin temor." );
 ctrl.ponImg( "res/abandonada.jpg" );
 ctrl.ponAutor( "Baltasarq" );
 ctrl.ponVersion( "20150322" );
@@ -166,11 +166,15 @@ var objLinterna = ctrl.creaObj(
 );
 objLinterna.encendida = false;
 objLinterna.preStart = function() {
-    var toret = "Pulsas el interruptor de la linterna.";
+    var toret = "Has pulsado el interruptor de la linterna.";
 
     if ( !objLinterna.encendida ) {
         toret += " Ahora está encendida.";
         objLinterna.encendida = true;
+
+        // Redescribe
+        acciones.ejecuta( "look" );
+		parser.sentencia.obj1 = objLinterna;
     } else {
         toret += " Ya estaba encendida.";
     }
@@ -179,11 +183,15 @@ objLinterna.preStart = function() {
 }
 
 objLinterna.preShutdown = function() {
-    var toret = "Pulsas el interruptor de la linterna.";
+    var toret = "Has pulsado el interruptor de la linterna.";
 
     if ( objLinterna.encendida ) {
         toret += " Ahora está apagada.";
         objLinterna.encendida = false;
+
+        // Redescribe
+        acciones.ejecuta( "look" );
+		parser.sentencia.obj1 = objLinterna;
     } else {
         toret += " Ya estaba apagada.";
     }
@@ -897,12 +905,52 @@ objPuertaSotano.prePush = function() {
 var locPasillo = ctrl.lugares.creaLoc(
     "Pasillo",
     [ "pasaje", "subterraneo" ],
-    "El pasillo se extiende de ${oeste, o} a ${este, e}. En el extremo \
+    "El pasillo se interna en la oscuridad. En el extremo \
      ${oeste, o}, hay una ${puerta, ex puerta}."
 );
-locPasillo.pic = "res/pasillo-oscuro.jpg";
+
+locPasillo.luz = false;
+locPasillo.visitasConLuz = 0;
 locPasillo.ponSalidaBi( "oeste", locSotano );
 locPasillo.objs.push( objParedes );
+
+locPasillo.preLook = function() {
+	var toret = locPasillo.desc;
+
+	if ( locPasillo.hayLuz() ) {
+		locPasillo.visitasConLuz += 1;
+		locPasillo.pic = "res/trampilla.jpg";
+		objEscalerasTrampilla.mueveA( locPasillo );
+		toret += " Debajo, en el suelo, hay unos \
+				  ${peldaños, ex escaleras} que permiten \
+				  ${continuar bajando, baja}.";
+
+		if ( locPasillo.visitasConLuz < 3 ) {
+			toret += " Está realmente oscuro, por eso no los habías \
+					  visto antes. Podías haberte matado.";
+		}
+	} else {
+		locPasillo.pic = null;
+		objEscalerasTrampilla.mueveA();
+		toret += " Está amedrantemente oscuro.";
+	}
+
+	return toret;
+}
+
+locPasillo.preGo = function(s) {
+	var toret = "";
+
+	if ( locPasillo.hayLuz()
+	  || parser.sentencia.term1 == "oeste" )
+	{
+		toret = goAction.exe( parser.sentencia );
+	} else {
+		toret = "No, no, está muy oscuro, no veo nada. Necesito luz.";
+	}
+
+	return toret;
+}
 
 var objPuertaSotanoFalsa = ctrl.creaObj(
 	"puerta",
@@ -912,6 +960,66 @@ var objPuertaSotanoFalsa = ctrl.creaObj(
 	Ent.Escenario
 );
 
+var objEscalerasTrampilla = ctrl.creaObj(
+	"escaleras",
+	[ "peldanos", "escalera", "escalones", "escalon", "polvo",
+	  "piedras", "piedra", "suciedad" ],
+	"Unos peldaños polvorientos permiten ${bajar, baja}.",
+	locPasillo,
+	Ent.Escenario
+);
+
+objEscalerasTrampilla.preExamine = function() {
+	var toret = "";
+
+	if ( ctrl.lugares.getCurrentLoc() == locPasillo ) {
+		toret = "Unos peldaños permiten ${bajar, baja}.";
+	} else {
+		toret = "Unos peldaños permiten ${subir, sube}.";
+	}
+
+	return toret;
+}
+
+
+objEscalerasTrampilla.preDescend = function() {
+	return acciones.ejecuta( "Go", "abajo" );
+}
+
+objEscalerasTrampilla.preClimb = function() {
+	return acciones.ejecuta( "Go", "arriba" );
+}
+
+var locPasillo2 = ctrl.lugares.creaLoc(
+    "Pasillo",
+    [ "pasaje", "subterraneo" ],
+    "El pasillo se extiende de oeste a ${este, e}. En el extremo \
+     oeste, hay unos ${peldaños de piedra, ex escaleras} que permiten \
+     ${subir, sube}."
+);
+
+locPasillo2.luz = false;
+locPasillo2.ponSalidaBi( "arriba", locPasillo );
+locPasillo2.objs.push( objParedes );
+locPasillo2.objs.push( objEscalerasTrampilla );
+
+locPasillo2.preLook = function() {
+	var toret = locPasillo2.desc;
+
+	if ( !locPasillo2.hayLuz() ) {
+		locPasillo2.pic = null;
+		ctrl.irA( locPasillo );
+		toret = "<p>Has retrocedido asustado ante la falta de luz, y \
+				como has podido, a tientas, has subido los peldaños \
+				para volver a la estancia anterior.</p>"
+				+ locPasillo.desc;
+	} else {
+		locPasillo2.pic = "res/pasillo-oscuro.jpg";
+	}
+
+	return toret;
+}
+
 // --- Jugador ---------------------------------------------------------
 var jugador = ctrl.personas.creaPersona( "Alguien",
                     [ "hombre", "agente", "anacleto" ],
@@ -920,7 +1028,7 @@ var jugador = ctrl.personas.creaPersona( "Alguien",
 );
 
 jugador.llevaLuz = function() {
-        return ( jugador.has( objLinterna ) && objLinterna.encendida );
+        return ( ctrl.estaPresente( objLinterna ) && objLinterna.encendida );
 }
 
 var objBrujula = ctrl.creaObj(
@@ -986,4 +1094,6 @@ objBrujula.preExamine = function() {
 
 // Arranque ------------------------------------------------------------
 ctrl.personas.cambiaJugador( jugador );
-ctrl.lugares.ponInicio( locExterior );
+// ctrl.lugares.ponInicio( locExterior );
+ctrl.lugares.ponInicio( locPasillo );
+objLinterna.mueveA( locPasillo );

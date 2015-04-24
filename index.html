@@ -92,7 +92,7 @@
                         <td align="right"><div id="dvId"></div></td>
                 </tr></table>
         </div>
-        <div id="dvIntro" style="display:block" onSubmit="return ctrl.boot();">
+        <div id="dvIntro" style="display:block">
                 <form id="frmIntro" action="submit">
                         <input type="image" id="btBoot" class="btn"
                                alt="enter" width="32" height="32"
@@ -139,12 +139,12 @@
                 </div>
                 <div id="dvError">
                 </div>
-                <hr>
                 <p></p>
-                <div id="dvObjects">
-                </div>
+                <table id="tbl-objects-actions" width="100%">
+				<tr>
+                <td>
                 <div id="dvActions">
-                    <table align="center"><tr>
+                    <table id="subtbl-actions" align="center"><tr>
                     <td>
                         <img id="btInv" alt="inventario" width="32" height="32"
                                         style="vertical-align:middle;"
@@ -204,7 +204,7 @@
                         </tr>
                         <tr>
                         <td>
-                                                <img id="btOpen" alt="abre" width="32" height="32"
+                        <img id="btOpen" alt="abre" width="32" height="32"
                                         style="vertical-align:middle;"
                                         src="res/open.png"
                                         title="abre"
@@ -276,6 +276,11 @@
 
                     </tr></table>
                 </div>
+                </td>
+                <td>
+                <div id="dvObjects">
+                </div>
+                </td></tr></table>
         </div>
     </body>
 </html>
