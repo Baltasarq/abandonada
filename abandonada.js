@@ -171,7 +171,11 @@ objLinterna.preStart = function() {
     if ( !objLinterna.encendida ) {
         toret += " Ahora está encendida.";
         objLinterna.encendida = true;
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
         // Redescribe
         acciones.ejecuta( "look" );
 		parser.sentencia.obj1 = objLinterna;
@@ -188,7 +192,11 @@ objLinterna.preShutdown = function() {
     if ( objLinterna.encendida ) {
         toret += " Ahora está apagada.";
         objLinterna.encendida = false;
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
         // Redescribe
         acciones.ejecuta( "look" );
 		parser.sentencia.obj1 = objLinterna;
@@ -916,7 +924,11 @@ locPasillo.objs.push( objParedes );
 
 locPasillo.preLook = function() {
 	var toret = locPasillo.desc;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
 	if ( locPasillo.hayLuz() ) {
 		locPasillo.visitasConLuz += 1;
 		locPasillo.pic = "res/trampilla.jpg";
@@ -924,7 +936,11 @@ locPasillo.preLook = function() {
 		toret += " Debajo, en el suelo, hay unos \
 				  ${peldaños, ex escaleras} que permiten \
 				  ${continuar bajando, baja}.";
+<<<<<<< HEAD
 
+=======
+				  
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
 		if ( locPasillo.visitasConLuz < 3 ) {
 			toret += " Está realmente oscuro, por eso no los habías \
 					  visto antes. Podías haberte matado.";
@@ -934,12 +950,17 @@ locPasillo.preLook = function() {
 		objEscalerasTrampilla.mueveA();
 		toret += " Está amedrantemente oscuro.";
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
 	return toret;
 }
 
 locPasillo.preGo = function(s) {
 	var toret = "";
+<<<<<<< HEAD
 
 	if ( locPasillo.hayLuz()
 	  || parser.sentencia.term1 == "oeste" )
@@ -949,6 +970,17 @@ locPasillo.preGo = function(s) {
 		toret = "No, no, está muy oscuro, no veo nada. Necesito luz.";
 	}
 
+=======
+	
+	if ( locPasillo.hayLuz()
+	  || parser.sentencia.term1 == "oeste" )
+	{
+		toret = goAction.exe( parser.sentencia, locPasillo );
+	} else {
+		toret = "No, no, está muy oscuro, no veo nada. Necesito luz.";
+	}
+	
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
 	return toret;
 }
 
@@ -971,13 +1003,21 @@ var objEscalerasTrampilla = ctrl.creaObj(
 
 objEscalerasTrampilla.preExamine = function() {
 	var toret = "";
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
 	if ( ctrl.lugares.getCurrentLoc() == locPasillo ) {
 		toret = "Unos peldaños permiten ${bajar, baja}.";
 	} else {
 		toret = "Unos peldaños permiten ${subir, sube}.";
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
 	return toret;
 }
 
@@ -1005,6 +1045,7 @@ locPasillo2.objs.push( objEscalerasTrampilla );
 
 locPasillo2.preLook = function() {
 	var toret = locPasillo2.desc;
+<<<<<<< HEAD
 
 	if ( !locPasillo2.hayLuz() ) {
 		locPasillo2.pic = null;
@@ -1017,6 +1058,19 @@ locPasillo2.preLook = function() {
 		locPasillo2.pic = "res/pasillo-oscuro.jpg";
 	}
 
+=======
+	
+	if ( !locPasillo2.hayLuz() ) {
+		ctrl.irA( locPasillo );
+		ctrl.print( "Has retrocedido asustado ante la falta de luz, y \
+					como has podido, a tientas, has subido los peldaños \
+					para volver a la estancia anterior." );
+		toret = locPasillo.desc;
+	} else {
+		locPasillo2.pic = "res/pasillo-oscuro.jpg";
+	}
+	
+>>>>>>> 94d3d4ade8be5d83a5696e19ad834b5774a3cc04
 	return toret;
 }
 
