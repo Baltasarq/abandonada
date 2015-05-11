@@ -993,9 +993,9 @@ objEscalerasTrampilla.preClimb = function() {
 var locPasillo2 = ctrl.lugares.creaLoc(
     "Pasillo",
     [ "pasaje", "subterraneo" ],
-    "El pasillo se extiende de oeste a ${este, e}. En el extremo \
-     oeste, hay unos ${peldaños de piedra, ex escaleras} que permiten \
-     ${subir, sube}."
+    "El pasillo se extiende de ${oeste, oeste} a ${este, este}. \
+     En el extremo oeste, hay unos ${peldaños de piedra, ex escaleras} \
+     que permiten ${subir, sube}."
 );
 
 locPasillo2.luz = false;
@@ -1021,12 +1021,95 @@ locPasillo2.preLook = function() {
 	return toret;
 }
 
+var locPasilloEscaleraExterior = ctrl.lugares.creaLoc(
+    "Escalera al exterior",
+    [ "pasaje", "subterraneo" ],
+    "El pasillo se extiende de ${oeste, oeste} a ${este, este}, \
+     donde se aprecia una clara luz que parece provenir directamente \
+     del exterior. En el extremo este, \
+     hay unos ${peldaños de piedra, ex escaleras} \
+     que permiten ${subir, sube}."
+);
+
+locPasilloEscaleraExterior.luz = true;
+locPasilloEscaleraExterior.pic = "res/escalera_exterior.jpg";
+locPasilloEscaleraExterior.objs.push( objParedes );
+locPasilloEscaleraExterior.objs.push( objEscalerasTrampilla );
+locPasilloEscaleraExterior.ponSalidaBi( "oeste", locPasillo2 );
+
+var locEmbarcadero = ctrl.lugares.creaLoc(
+    "Embarcadero",
+    [ "casa", "colina", "salida", "subterraneo", "tunel" ],
+    "Un pequeño embarcadero se sitúa en perpendicular al subterráneo, paralelo \
+     a la casa que adivinas por encima de la colina tras la salida \
+     al ${oeste, oeste}. Las verdes aguas de un pantano se abren frente a ti, \
+     brumosas y húmedas. Pequeños crujidos acompañan al monótono, \
+     casi inexistente oleaje."
+);
+
+locEmbarcadero.pic = "res/pantano.jpg";
+locEmbarcadero.llegaronNarcos = false;
+locEmbarcadero.ponSalidaBi( "oeste", locPasilloEscaleraExterior );
+locEmbarcadero.ponSalidaBi( "abajo", locPasilloEscaleraExterior );
+
+locEmbarcadero.preLook = function() {
+    var toret = locEmbarcadero.desc;
+
+    if ( ctrl.personas.getPlayer().has( objLinterna )
+      && objLinterna.encendida )
+    {
+        acciones.ejecuta( "shutdown", "linterna" );
+        toret += "<p>Al notar que llevas la linterna encendida, \
+				  decides apagarla.</p>";
+    }
+    
+    if ( !this.llegaronNarcos ) {
+		this.llegaronNarcos = true;
+		jugador.ponAlarma( 3, function() {
+			ctrl.print( "Que vienen, que vienen!!!" );
+		});
+	}
+
+    return toret;
+}
+
+var objEmbarcadero = ctrl.creaObj(
+	"muelle",
+	[ "desembarcadero", "atracadero", "apeadero" ],
+	"Sucio, húmedo y mohoso, parece un milagro que se mantenga en pie.",
+	locEmbarcadero,
+	Ent.Escenario
+);
+
 // --- Jugador ---------------------------------------------------------
 var jugador = ctrl.personas.creaPersona( "Alguien",
                     [ "hombre", "agente", "anacleto" ],
                     "Anacleto, agente de psico-investigaciones.",
                     locExterior
 );
+
+jugador.turnos = 0;
+jugador.alarma = -1;
+jugador.eventoAlarma = null;
+jugador.preAction = function() {
+	++this.turnos;
+	return "";
+}
+
+jugador.postAction = function() {
+	if ( this.turnos == this.alarma ) {
+		this.turnos = -1;
+		
+		if ( this.eventoAlarma != null ) {
+			this.eventoAlarma();
+		}
+	}
+}
+
+jugador.ponAlarma = function( numTurnos, f) {
+	this.alarma = this.turnos + numTurnos;
+	this.eventoAlarma = f;
+}
 
 jugador.llevaLuz = function() {
         return ( ctrl.estaPresente( objLinterna ) && objLinterna.encendida );
@@ -1096,5 +1179,6 @@ objBrujula.preExamine = function() {
 // Arranque ------------------------------------------------------------
 ctrl.personas.cambiaJugador( jugador );
 // ctrl.lugares.ponInicio( locExterior );
-ctrl.lugares.ponInicio( locPasillo );
-objLinterna.mueveA( locPasillo );
+ctrl.lugares.ponInicio( locEmbarcadero );
+objLinterna.mueveA( jugador );
+objLinterna.encendida = true;

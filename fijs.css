@@ -9,7 +9,8 @@ body {
 /* Hyperlinks */
 a {
 	color:#77aabb;
-	text-decoration:none
+	text-decoration:none;
+    cursor: crosshair;
 }
 
 a:hover {
