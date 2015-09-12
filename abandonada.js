@@ -1062,6 +1062,7 @@ locEmbarcadero.preLook = function() {
         toret += "<p>Al notar que llevas la linterna encendida, \
 				  decides apagarla.</p>";
     }
+<<<<<<< HEAD
 
     if ( !this.llegaronNarcos ) {
   		this.llegaronNarcos = true;
@@ -1071,6 +1072,14 @@ locEmbarcadero.preLook = function() {
                      aproxima por el río!" );
         ctrl.ponDaemon( "mueveNarcos", mueveNarcos );
   		});
+=======
+    
+    if ( !this.llegaronNarcos ) {
+		this.llegaronNarcos = true;
+		jugador.ponAlarma( 3, function() {
+			ctrl.print( "Que vienen, que vienen!!!" );
+		});
+>>>>>>> 792bc3d652c93b716330dd9034844bcd1fb6b528
 	}
 
     return toret;
@@ -1084,6 +1093,7 @@ var objEmbarcadero = ctrl.creaObj(
 	Ent.Escenario
 );
 
+<<<<<<< HEAD
 var locCurvaPantano = ctrl.lugares.creaLoc(
     "Curva del pantano",
     [ "curva", "pantano" ],
@@ -1142,6 +1152,8 @@ narco3.pos = -1;
 narco3.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
                      locPasillo, locSotano, locEscalerasInteriores, locSalon ];
 
+=======
+>>>>>>> 792bc3d652c93b716330dd9034844bcd1fb6b528
 // --- Jugador ---------------------------------------------------------
 var jugador = ctrl.personas.creaPersona( "Alguien",
                     [ "agente", "anacleto" ],
@@ -1149,6 +1161,7 @@ var jugador = ctrl.personas.creaPersona( "Alguien",
                     locExterior
 );
 
+<<<<<<< HEAD
 jugador.avanceNarcos = false;
 
 jugador.postAction = function() {
@@ -1192,6 +1205,29 @@ jugador.postAction = function() {
             }
         }
     }
+=======
+jugador.turnos = 0;
+jugador.alarma = -1;
+jugador.eventoAlarma = null;
+jugador.preAction = function() {
+	++this.turnos;
+	return "";
+}
+
+jugador.postAction = function() {
+	if ( this.turnos == this.alarma ) {
+		this.turnos = -1;
+		
+		if ( this.eventoAlarma != null ) {
+			this.eventoAlarma();
+		}
+	}
+}
+
+jugador.ponAlarma = function( numTurnos, f) {
+	this.alarma = this.turnos + numTurnos;
+	this.eventoAlarma = f;
+>>>>>>> 792bc3d652c93b716330dd9034844bcd1fb6b528
 }
 
 jugador.llevaLuz = function() {
