@@ -1062,7 +1062,6 @@ locEmbarcadero.preLook = function() {
         toret += "<p>Al notar que llevas la linterna encendida, \
 				  decides apagarla.</p>";
     }
-<<<<<<< HEAD
 
     if ( !this.llegaronNarcos ) {
   		this.llegaronNarcos = true;
@@ -1072,15 +1071,7 @@ locEmbarcadero.preLook = function() {
                      aproxima por el río!" );
         ctrl.ponDaemon( "mueveNarcos", mueveNarcos );
   		});
-=======
-    
-    if ( !this.llegaronNarcos ) {
-		this.llegaronNarcos = true;
-		jugador.ponAlarma( 3, function() {
-			ctrl.print( "Que vienen, que vienen!!!" );
-		});
->>>>>>> 792bc3d652c93b716330dd9034844bcd1fb6b528
-	}
+	   }
 
     return toret;
 }
@@ -1093,7 +1084,6 @@ var objEmbarcadero = ctrl.creaObj(
 	Ent.Escenario
 );
 
-<<<<<<< HEAD
 var locCurvaPantano = ctrl.lugares.creaLoc(
     "Curva del pantano",
     [ "curva", "pantano" ],
@@ -1116,8 +1106,6 @@ function mueveNarcos() {
       narco.mueveA( narcoLoc );
       ctrl.print( narco.id + " llega a " + narcoLoc.id );
     }
-
-    return;
   }
 
   return;
@@ -1152,83 +1140,12 @@ narco3.pos = -1;
 narco3.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
                      locPasillo, locSotano, locEscalerasInteriores, locSalon ];
 
-=======
->>>>>>> 792bc3d652c93b716330dd9034844bcd1fb6b528
 // --- Jugador ---------------------------------------------------------
 var jugador = ctrl.personas.creaPersona( "Alguien",
                     [ "agente", "anacleto" ],
                     "Anacleto, agente de psico-investigaciones.",
                     locExterior
 );
-
-<<<<<<< HEAD
-jugador.avanceNarcos = false;
-
-jugador.postAction = function() {
-    if ( this.avanceNarcos ) {
-        var loc = ctrl.lugares.getCurrentLoc();
-
-        ++narco1.pos;
-        ++narco2.pos;
-        ++narco3.pos;
-
-        if ( narco1.pos < narco1.recorrido.length ) {
-            var dest = narco1.recorrido[ narco1.pos ];
-            narco1.mueveA( dest );
-
-            if ( loc == dest ) {
-                jugador.muertePorNarco();
-            } else {
-                ctrl.print( "Escuchas a un narco entrar en " + dest.name );
-            }
-        }
-
-        if ( narco2.pos < narco2.recorrido.length ) {
-            var dest = narco2.recorrido[ narco2.pos ];
-            narco2.mueveA( dest );
-
-            if ( loc == dest ) {
-                jugador.muertePorNarco();
-            } else {
-                ctrl.print( "Escuchas a un narco entrar en " + dest.name );
-            }
-        }
-
-        if ( narco3.pos < narco3.recorrido.length ) {
-            var dest = narco3.recorrido[ narco3.pos ];
-            narco3.mueveA( dest );
-
-            if ( loc == dest ) {
-                jugador.muertePorNarco();
-            } else {
-                ctrl.print( "Escuchas a un narco entrar en " + dest.name );
-            }
-        }
-    }
-=======
-jugador.turnos = 0;
-jugador.alarma = -1;
-jugador.eventoAlarma = null;
-jugador.preAction = function() {
-	++this.turnos;
-	return "";
-}
-
-jugador.postAction = function() {
-	if ( this.turnos == this.alarma ) {
-		this.turnos = -1;
-		
-		if ( this.eventoAlarma != null ) {
-			this.eventoAlarma();
-		}
-	}
-}
-
-jugador.ponAlarma = function( numTurnos, f) {
-	this.alarma = this.turnos + numTurnos;
-	this.eventoAlarma = f;
->>>>>>> 792bc3d652c93b716330dd9034844bcd1fb6b528
-}
 
 jugador.llevaLuz = function() {
         return ( ctrl.estaPresente( objLinterna ) && objLinterna.encendida );
