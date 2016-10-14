@@ -8,82 +8,6 @@
         <script type="text/javascript" src="abandonada.js"></script>
         <title>Abandonada</title>
         <link href="fijs.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript">
-                        var prepBuildingOrder = "";
-
-			function updateObjects()
-			{
-				var dvObjects = document.getElementById( "dvObjects" );
-				var inventory = ctrl.personas.getPlayer().objs;
-				var reachable = ctrl.lugares.getCurrentLoc().objs;
-                                var personas = ctrl.lugares.getCurrentLoc().personas;
-                                var pObjects = document.createElement( "p" );
-				var strEntitiesList = "";
-
-                                if ( personas.length > 1 ) {
-                                        strEntitiesList += "/ ";
-                                        for(var i = 0; i < personas.length; ++i) {
-                                                if ( personas[ i ] != ctrl.personas.getPlayer() ) {
-                                                        strEntitiesList +=
-                                                                "<a href=\"javascript:addTerm('"
-                                                                + personas[ i ].id
-                                                                + "');\">"
-                                                                + personas[ i ].id
-                                                                + "</a>  / ";
-                                                }
-                                        }
-
-
-                                        strEntitiesList += "<br />";
-                                }
-
-                                if ( inventory.length > 0 ) {
-                                        strEntitiesList += "/ ";
-                                        for(var i = 0; i < inventory.length; ++i) {
-                                                strEntitiesList +=
-                                                        "<a href=\"javascript:addTerm('"
-                                                        + inventory[ i ].id
-                                                        + "');\">"
-                                                        + inventory[ i ].id
-                                                        + "</a>  / ";
-                                        }
-
-                                        strEntitiesList += "<br />";
-                                }
-
-
-                                if ( reachable.length > 0 ) {
-                                        strEntitiesList += "/ ";
-                                        for(var i = 0; i < reachable.length; ++i) {
-                                                strEntitiesList +=
-                                                        "<a href=\"javascript:addTerm('"
-                                                        + reachable[ i ].id
-                                                        + "');\">"
-                                                        + reachable[ i ].id
-                                                        + "</a>  / ";
-                                        }
-                                }
-
-                                dvObjects.innerHTML = "";
-                                dvObjects.appendChild( pObjects );
-                                pObjects.innerHTML = strEntitiesList;
-
-				return;
-			}
-
-                        function addTerm(w)
-                        {
-                                var doEnter = ( prepBuildingOrder.length == 0 );
-
-                                ctrl.inject( w, doEnter, false );
-
-                                if ( !doEnter ) {
-                                        ctrl.inject( prepBuildingOrder, false, false );
-                                }
-
-                                prepBuildingOrder = "";
-                        }
-        </script>
     </head>
     <body>
         <div id="dvTop">
@@ -124,14 +48,14 @@
                 <p>
                 <div id="dvInput" style="width:100%;display:block">
                     <table width="100%"><tr>
-                    <form id="frmInput" action="submit" onsubmit="toret = parser.doParse();updateObjects();return toret;">
+                    <form id="frmInput" action="submit" onsubmit="return parser.doParse();">
                         <td align="left">
                         &gt; <input type="text" class="txt" size="40"
                                 maxLength="80" id="edInput">
                         </td>
                         <td>
                             <input  id="btSend" type="button"
-                                    onClick="toret = parser.doParse();updateObjects();return toret;" style="display:none"/>
+                                    onClick="return parser.doParse();" style="display:none"/>
                             <input id="btReset" type="button" style="display:none"/>
                         </td>
                     </form>
@@ -199,7 +123,7 @@
                                         style="vertical-align:middle;"
                                         src="res/throw.png"
                                         title="tirar"
-                                        onClick="prepBuildingOrder = ' a '; ctrl.inject( 'lanza ', false ); return false;">
+                                        onClick="ctrl.prepBuildingOrder = ' a '; ctrl.inject( 'lanza ', false ); return false;">
                         </td>
                         </tr>
                         <tr>
@@ -250,7 +174,7 @@
                                         style="vertical-align:middle;"
                                         src="res/give.png"
                                         title="dar"
-                                        onClick="prepBuildingOrder = ' a '; ctrl.inject( 'dale ', false ); return false;">
+                                        onClick="ctrl.prepBuildingOrder = ' a '; ctrl.inject( 'dale ', false ); return false;">
                         </td>
                         <td>
 						<img id="btTurnOn" alt="enciende" width="32" height="32"

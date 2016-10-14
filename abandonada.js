@@ -14,7 +14,7 @@ ctrl.ponIntro( "Como agente de Psico-investigaciones, \
                 Así, tus clientes podr&aacute;n comprarla sin temor." );
 ctrl.ponImg( "res/abandonada.jpg" );
 ctrl.ponAutor( "Baltasarq" );
-ctrl.ponVersion( "20150322" );
+ctrl.ponVersion( "20161024" );
 
 // Luz ----------------------------------------------------------------
 Loc.prototype.luz = true;
@@ -140,6 +140,9 @@ objMaletero.preExamine = function() {
     } else {
         if ( ctrl.lugares.limbo.has( objLinterna ) ) {
             objLinterna.mueveA( objMaletero );
+        }
+
+        if ( ctrl.lugares.limbo.has( objAceite ) ) {
             objAceite.mueveA( objMaletero );
         }
 
@@ -542,30 +545,21 @@ var objMuebles = ctrl.creaObj(
 	Ent.Escenario
 );
 
-var objChimenea = ctrl.creaObj(
+var objChimeneaDesvan = ctrl.creaObj(
 	"chimenea",
-	[ "hogar", "tiro" ],
-	"El gran hueco negro del hogar. En la parte superior, un agujero \
+	[ "hogar", "tiro", "lareira" ],
+	"El gran hueco negro del hogar. En la parte superior e inferior, un agujero \
 	 permite acceder al tiro de la misma, que va hacia arriba y hacia \
 	 abajo.",
-    locDesvan,
+    	locDesvan,
 	Ent.Escenario
 );
 
-objChimenea.ponContenedor();
-objChimenea.preExamine = function() {
-	if ( ctrl.lugares.limbo.has( objPiedra ) ) {
-		objPiedra.mueveA( objChimenea );
-	}
-
-	return examineAction.exe( parser.sentence );
-}
-
-objChimenea.preStart = function() {
+objChimeneaDesvan.preStart = function() {
 	return "¿Para qué? Ni que hiciera frío...";
 }
 
-objChimenea.preShutdown = function() {
+objChimeneaDesvan.preShutdown = function() {
 	return "Ahora mismo está apagada.";
 }
 
@@ -578,10 +572,15 @@ var objEstufa = ctrl.creaObj(
 	Ent.Escenario
 );
 
+objEstufa.ponContenedor();
 objEstufa.preExamine = function() {
 	var toret = objEstufa.desc;
 
 	if ( objEstufa.abierta ) {
+		if ( ctrl.lugares.limbo.has( objPiedra ) ) {
+			objPiedra.mueveA( objEstufa );
+		}
+
 		toret = "La tapa está abierta. ";
 		toret += examineAction.exe( parser.sentence );
 	} else {
@@ -650,11 +649,41 @@ var objPiedra = ctrl.creaObj(
 	Ent.Portable
 );
 
+objPiedra.preDrop = function() {
+	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
+		var toret = "La piedra cae por el tiro de la chimenea. La oyes \
+			 rebotar hacia abajo, para finalmente depositarse \
+			 con un ruido sordo en la planta inferior.";
+		objPiedra.mueveA( objChimeneaSalon );
+
+		if ( narco1.owner != ctrl.lugares.limbo ) {
+			toret += "<br>Escuchas varias voces dando gritos abajo.<br>\
+				  - ¡Joder!¡Es verdad que está encantada!<br>\
+				  - ¡Pero no digáis tonterías!<br>\
+				  - ¡Es mejor que nos larguemos!<br>\
+				  - Pero... ¡maldita sea!<br>\
+				  Pasos apresurados debajo de ti se alejan hacia el este... \
+				  Al poco rato, escuchas el ruido de la lancha, \
+				  alejándose por el río.";
+
+			narco1.mueveA();
+			narco2.mueveA();
+			narco3.mueveA();
+            objLancha.puedeSubir = true;
+		}
+
+		return toret;
+	}
+
+	return dropAction.exe( parser.sentence );
+}
+
 locSalon = ctrl.lugares.creaLoc(
     "Salón",
     [ "salon", "sala", "habitacion", "estancia" ],
     "Las ${ventanas, ex ventanas} iluminan un salón en franca \
-     decadencia. Algunos ${cascotes, ex cascotes}, \
+     decadencia. Una ${chimenea, ex chimenea} ,\
+     algunos ${cascotes, ex cascotes}, \
      ${papeles, ex papeles} por el suelo, un mohoso ${sofá, ex sofa}, \
      una vieja ${silla de ruedas, ex silla} \
      e incluso un viejo ${baúl, ex caja}, son el triste reflejo de lo \
@@ -667,6 +696,24 @@ locSalon.ponSalidaBi( "norte", locEscalerasInteriores );
 locSalon.objs.push( objCascotes );
 locSalon.objs.push( objVentanas );
 locSalon.objs.push( objParedes );
+
+var objChimeneaSalon = ctrl.creaObj (
+	"chimenea",
+	[ "hogar", "tiro", "lareira" ],
+	"El gran hueco negro del hogar. En la parte superior, un agujero \
+	 permite acceder al tiro de la misma, que va hacia arriba.",
+	locSalon,
+	Ent.Escenario
+);
+
+objChimeneaSalon.ponContenedor();
+objChimeneaSalon.preStart = function() {
+	return "¿Para qué? Ni que hiciera frío...";
+}
+
+objChimeneaSalon.preShutdown = function() {
+	return "Ahora mismo está apagada.";
+}
 
 var objSofa = ctrl.creaObj(
 	"sofá",
@@ -859,7 +906,7 @@ objPuertaSotano.preOpen = function() {
 	if ( !objPuertaSotano.abierta ) {
 		if ( ctrl.isPresent( objLlaves ) ) {
 			if ( ctrl.isPresent( objAceite ) ) {
-				toret = "Hechas un poco de aceite sobre la llave, y \
+				toret = "Echas un poco de aceite sobre la llave, y \
 						  la introduces en la cerradura, consiguiendo \
 						  hacerla girar suavemente.";
 				objPuertaSotano.abierta = true;
@@ -995,11 +1042,13 @@ var locPasillo2 = ctrl.lugares.creaLoc(
     [ "pasaje", "subterraneo" ],
     "El pasillo se extiende de ${oeste, oeste} a ${este, este}. \
      En el extremo oeste, hay unos ${peldaños de piedra, ex escaleras} \
-     que permiten ${subir, sube}."
+     que permiten ${subir, sube}. En la pared sur del corredor, puedes ver \
+     una ${puerta, ex puerta}."
 );
 
 locPasillo2.luz = false;
 locPasillo2.ponSalidaBi( "arriba", locPasillo );
+locPasillo2.ponSalida( "oeste", locPasillo );
 locPasillo2.objs.push( objParedes );
 locPasillo2.objs.push( objEscalerasTrampilla );
 
@@ -1011,8 +1060,7 @@ locPasillo2.preLook = function() {
 		ctrl.irA( locPasillo );
 		toret = "Has retrocedido asustado ante la falta de luz, y \
 					como has podido, a tientas, has subido los peldaños \
-					para volver a la estancia anterior.\
-                                        <br />";
+					para volver a la estancia anterior.<br />";
 		toret += locPasillo.desc;
 	} else {
 		locPasillo2.pic = "res/pasillo-oscuro.jpg";
@@ -1020,6 +1068,94 @@ locPasillo2.preLook = function() {
 
 	return toret;
 }
+
+locPasillo2.preGo = function() {
+    var toret = "";
+
+    if ( parser.sentencia.term1 == "sur"
+      && !objPuertaPasilloLabo.abierta )
+    {
+        toret = "La puerta está cerrada.";
+    } else {
+        toret = goAction.exe( parser.sentencia );
+    }
+
+    return toret;
+}
+
+var objPuertaPasilloLabo = ctrl.creaObj(
+    "puerta",
+    [ "acero" ],
+    "Una recia puerta de acero, de brillante cerradura, \
+     se abre en la pared ${sur, sur}. \
+     Curioso, no parece abandonada en absoluto.",
+    locPasillo2,
+    Ent.Escenario
+);
+objPuertaPasilloLabo.abierta = false;
+objPuertaPasilloLabo.preOpen = function() {
+    var jugador = ctrl.personas.getPlayer();
+    var toret = "Permanece firmemente cerrada.";
+
+    if ( jugador.has( objGanzua ) ) {
+        toret = "La habilidad que te dio un pasado inconfesable te permite \
+                 desbloquear la cerradura de \
+                 la puerta al ${sur, sur} con la ganzúa.";
+        objPuertaPasilloLabo.abierta = true;
+
+        locEmbarcadero.traeNarcos();
+    }
+
+    return toret;
+}
+
+var locLabo = ctrl.lugares.creaLoc(
+    "Laboratorio",
+    [ "labo", "almacen", "habitacion" ],
+    "Una pequeña y húmeda habitación contiene varios \
+    ${instrumentos, ex material} que identificas como \
+    matraces, filtros, mecheros y otros. \
+    Además, en una esquina hay varios ${fardos, ex fardos}. \
+    Las ${paredes, ex paredes} han sido recebadas con cemento, \
+    si bien es probable que el río esté próximo, pues pequeñas gotas perlan su superficie. La única salida es la puerta por la que entraste, \
+    al ${norte, norte}."
+);
+locLabo.ponSalidaBi( "norte", locPasillo2 );
+locLabo.pic = "res/labo.jpg";
+
+var objParedes = ctrl.creaObj(
+	"paredes",
+	[ "pared", "muro", "muros", "cemento", "gota", "gotas", "moho" ],
+	"Son unos mohosos muros de cemento, perlados de gotas de agua.",
+	locLabo,
+	Ent.Escenario
+);
+
+var objInstrumentos = ctrl.creaObj(
+	"instrumentos",
+	[ "instrumento", "materiales", "material" ],
+	"El material de laboratorio se te antoja indiferente, más allá de reconocer \
+	 algunos instrumentos.",
+	locLabo,
+	Ent.Escenario
+);
+
+var objFardos = ctrl.creaObj(
+	"fardos",
+	[ "fardo", "sacos", "saco" ],
+	"Son envoltorios de plástico que parecen contener un polvo blanco \
+	y compacto. O es harina o...",
+	locLabo,
+	Ent.Escenario
+);
+
+var objPuertaLabo = ctrl.creaObj(
+	"puerta",
+	[ "salida" ],
+	"La puerta del labo, al ${norte, norte}.",
+	locLabo,
+	Ent.Escenario
+);
 
 var locPasilloEscaleraExterior = ctrl.lugares.creaLoc(
     "Escalera al exterior",
@@ -1040,7 +1176,8 @@ locPasilloEscaleraExterior.ponSalidaBi( "oeste", locPasillo2 );
 var locEmbarcadero = ctrl.lugares.creaLoc(
     "Embarcadero",
     [ "casa", "colina", "salida", "subterraneo", "tunel" ],
-    "Un pequeño embarcadero se sitúa en perpendicular al subterráneo, paralelo \
+    "Un pequeño ${muelle, ex muelle} se sitúa en perpendicular \
+     al subterráneo, paralelo \
      a la casa que adivinas por encima de la colina tras la salida \
      al ${oeste, oeste}. Las verdes aguas de un pantano se abren frente a ti, \
      brumosas y húmedas. Pequeños crujidos acompañan al monótono, \
@@ -1051,6 +1188,24 @@ locEmbarcadero.pic = "res/pantano.jpg";
 locEmbarcadero.llegaronNarcos = false;
 locEmbarcadero.ponSalidaBi( "oeste", locPasilloEscaleraExterior );
 locEmbarcadero.ponSalidaBi( "abajo", locPasilloEscaleraExterior );
+
+locEmbarcadero.traeNarcos = function() {
+    if ( !this.llegaronNarcos ) {
+        this.llegaronNarcos = true;
+        ctrl.ponAlarma( 6, function() {
+            ctrl.print( "Un ruido lejano de un motor, \
+                        que cada vez se acerca más \
+                        y más, te saca de tu ensimismamiento... ¡una lancha se \
+                        aproxima por el río!" );
+            ctrl.ponAlarma( 6, function() {
+                ctrl.print( "En la distancia, oyes varias pisadas ahogadas. \
+                                Varias personas descienden \
+                                de alguna embarcación al muelle." );
+                ctrl.ponDaemon( "mueveNarcos", mueveNarcos );
+            });
+        });
+    }
+}
 
 locEmbarcadero.preLook = function() {
     var toret = locEmbarcadero.desc;
@@ -1063,16 +1218,6 @@ locEmbarcadero.preLook = function() {
 				  decides apagarla.</p>";
     }
 
-    if ( !this.llegaronNarcos ) {
-  		this.llegaronNarcos = true;
-  		ctrl.ponAlarma( 3, function() {
-  			ctrl.print( "Un ruido lejano de un motor, que cada vez se acerca más \
-                     y más te saca de tu ensimismamiento... ¡una lancha se \
-                     aproxima por el río!" );
-        ctrl.ponDaemon( "mueveNarcos", mueveNarcos );
-  		});
-	   }
-
     return toret;
 }
 
@@ -1084,13 +1229,111 @@ var objEmbarcadero = ctrl.creaObj(
 	Ent.Escenario
 );
 
+objEmbarcadero.preExamine = function() {
+  var toret = objEmbarcadero.desc;
+
+  if ( objLancha.owner == ctrl.lugares.limbo ) {
+    objLancha.moveTo( locEmbarcadero );
+    toret += "<br>Atracada al precario muelle, puedes ver una \
+    ${planeadora, ex planeadora}.";
+  }
+
+  return toret;
+}
+
+var objLancha = ctrl.creaObj(
+  "lancha",
+	[ "bote", "planeador", "planeadora", "motora" ],
+	"Se trata de una de esas planeadoras, con una especie de ventilador detrás.",
+	ctrl.lugares.limbo,
+	Ent.Escenario
+);
+objLancha.puedeSubir = false;
+
+objLancha.preClimb = function() {
+  return actions.execute( "enter", "lancha" );
+}
+
+objLancha.preEnter = function() {
+    var toret = "Das un traspiés, y caes de bruces de nuevo en el muelle...";
+
+    if ( !objLancha.puedeSubir ) {
+        ctrl.print( "Escuchas un lejano rumor de un motor..." );
+        toret = "Vuelves al muelle. Algo te dice que debes buscar refugio.";
+        locEmbarcadero.traeNarcos();
+    } else {
+        ctrl.goto( locCurvaPantano );
+        toret = "La lancha ronronea...";
+    }
+
+    return toret;
+}
+
+objLancha.ponContenedor( true );
+
+var objGanzua = ctrl.creaObj(
+	"ganzúa",
+	[ "ganzua", "ganzuas", "palanca", "palancas", "herramienta" ],
+	"Permite abrir puertas sin tener las llaves.",
+	objLancha,
+	Ent.Portable
+);
+
+
 var locCurvaPantano = ctrl.lugares.creaLoc(
     "Curva del pantano",
     [ "curva", "pantano" ],
     "El lecho de un río aparece enmarcado por la vegetación irregular. Las \
-    verdosas aguas del pantano fluyen en una curva de $oeste, oeste a $este, \
-    este."
+    verdosas aguas del pantano fluyen en una curva de ${oeste, oeste} \
+    a ${norte, norte}."
 );
+locCurvaPantano.pic = "res/curva_pantano.jpg";
+locCurvaPantano.ponSalida( "oeste", locEmbarcadero );
+
+var locPantanoTupido = ctrl.lugares.creaLoc(
+    "Pantano tupido",
+    [ "pantano" ],
+    "El río se estrecha por momentos, teniendo que sortear continuamente \
+    muchos árboles y otra vegetación. Las \
+    verdosas aguas del pantano fluyen de ${norte, norte} \
+    a ${sur, sur}."
+);
+locPantanoTupido.pic = "res/avance_pantano.jpg";
+locPantanoTupido.ponSalidaBi( "sur", locCurvaPantano );
+
+var locSalidaPantano = ctrl.lugares.creaLoc(
+    "Salida del pantano",
+    [ "pantano" ],
+    "Repentinamente, las aguas parecen abrirse, y los árboles desaparecen, \
+    de forma que puedes ver en lontananza. Las \
+    verdosas aguas del pantano fluyen suavemente de ${norte, norte} \
+    a ${sur, sur}."
+);
+locSalidaPantano.pic = "res/salida_pantano.jpg";
+locSalidaPantano.ponSalidaBi( "sur", locPantanoTupido );
+
+locSalidaPantano.preGo = function() {
+    var toret = "";
+
+    if ( parser.sentencia.term1 == "norte" ) {
+        document.getElementById( "dvFrame" ).style.display = "none";
+        document.getElementById( "dvActions" ).style.display = "none";
+        document.getElementById( "dvObjects" ).style.display = "none";
+        ctrl.terminaJuego(
+            "&iexcl;Menuda aventura!\
+                &iexcl;En menudo lío te has metido sin quererlo!<br/> \
+                Respiras profundamente, ya con calma, mientras la lancha se \
+                desliza por la corriente, formando ondas cenagosas a su paso. \
+                <p>&iexcl;Lo has conseguido!</p>",
+            "res/salida_pantano.jpg"
+        );
+    } else {
+        toret = goAction.exe( parser.sentencia );
+    }
+
+    return toret;
+}
+
 
 // PNJ's
 function mueveNarcos() {
@@ -1102,13 +1345,39 @@ function mueveNarcos() {
 
     if ( narco.pos < narco.recorrido.length ) {
       var narcoLoc = narco.recorrido[ narco.pos ];
+      var narcoMsg = narco.message[ narco.pos ];
 
       narco.mueveA( narcoLoc );
-      ctrl.print( narco.id + " llega a " + narcoLoc.id );
+      ctrl.print( narcoMsg );
+
+      if ( narcoLoc == ctrl.places.getCurrentLoc() ) {
+            muertePorNarco();
+      }
+    } else {
+        if ( narco.pos == narco.recorrido.length +1 ) {
+            narco.ponEnVigilancia();
+            narco.pos = narco.recorrido.length +2;
+        }
     }
   }
 
   return;
+}
+
+function muertePorNarco() {
+	document.getElementById( "dvFrame" ).style.display = "none";
+	document.getElementById( "tbl-objects-actions" ).style.display = "none";
+
+	ctrl.terminaJuego( "- ¡Eh!¿Qué haces tú aquí?<br> \
+                Son una banda de criminales. Te das cuenta \
+                de que han estado utilizando la casa abandonada para almacenar \
+                los cargamentos que traen por el río. ¿De ahí la fama de la casa? \
+			    Los narcos te rodean en todas direcciones. \
+			    Humberto, el jefe, toma la palabra.<br>\
+			    - Bien, bien,... Me temo que no nos gustan mucho los \
+			    visitantes por aquí... tendremos que dejar clara \
+			    nuestra falta de hospitalidad.",
+			   "res/abandonada.jpg" );
 }
 
 var narco1 = ctrl.personas.creaPersona( "Carlos",
@@ -1119,7 +1388,26 @@ var narco1 = ctrl.personas.creaPersona( "Carlos",
 );
 narco1.pos = -1;
 narco1.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
-                     locPasillo, locSotano, locEscalerasInteriores, locSalon ];
+                     locLabo, locPasillo, locSotano, locEscalerasInteriores, locSalon ];
+narco1.message = [ "- Manrique, ¿has comprobado la mercancía?",
+                  "Oyes las pisadas de uno al entrar en el pasadizo por la escalera.",
+                  "Se oye a Carlos desde el pasadizo: ¿Vienes, Humberto?",
+		              "Escuchas pisadas dirigiéndose al pasillo.",
+		              "- ¡Joder!¡Alguien ha intentado entrar en el laboratorio!",
+            		  "Uno de los visitantes pasa por las escaleras de camino al salón.",
+            		  "Uno de ellos silba.",
+            		  "Oyes cómo se abre una ventana.",
+                ];
+narco1.ponEnVigilancia = function() {
+	ctrl.ponDaemon(
+		"narco1-vigilancia",
+		function() {
+			if ( ctrl.places.getCurrentLoc().has( narco1 ) ) {
+				muertePorNarco();
+			}
+		}
+	);
+}
 
 var narco2 = ctrl.personas.creaPersona( "Manrique",
                     [ "criminal", "narco" ],
@@ -1129,6 +1417,38 @@ var narco2 = ctrl.personas.creaPersona( "Manrique",
 narco2.pos = -1;
 narco2.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
                      locPasillo, locSotano, locEscalerasInteriores, locCocina, locExterior ];
+narco2.message = [ "- Joder, Carlos, ya te dije que sí.",
+                   "Escuchas a otro descender por la escalera exterior.",
+                   "- Deja al jefe en paz...",
+            		   "Ahora son dos los que se han quedado quietos....",
+            		   "- ¡Hay que registrar la casa!, no puede andar lejos.",
+            		   "Otro sube las escaleras arrastrando los pies.",
+            		   "Un ladrillo se rompe, supones que de una patada \
+            		    propinada por uno de ellos.",
+            		   "Se oyen los crujidos del porche al salir uno de ellos \
+            		    al exterior.",
+                 ];
+narco2.ponEnVigilancia = function() {
+    ctrl.ponAlarma( 5, function() {
+      if ( locExterior.has( narco2 ) ) {
+        narco2.mueveA( locSalon );
+        ctrl.print( "Escuchas a uno de los visitantea entrar \
+                     atropelladamente en el salón.<br>\
+        	     - ¡Hay un coche aparcado ahí fuera!<br>\
+        	     - ¡Manteneos alerta!" );
+      }
+	});
+
+	ctrl.ponDaemon(
+		"narco2-vigilancia",
+		function() {
+			if ( ctrl.places.getCurrentLoc().has( narco2 ) ) {
+				muertePorNarco();
+			}
+		}
+	);
+}
+
 
 var narco3 = ctrl.personas.creaPersona( "Humberto",
                     [ "criminal", "narco" ],
@@ -1138,7 +1458,30 @@ var narco3 = ctrl.personas.creaPersona( "Humberto",
 );
 narco3.pos = -1;
 narco3.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
-                     locPasillo, locSotano, locEscalerasInteriores, locSalon ];
+                     locPasillo, locSotano, locEscalerasInteriores, locSalon, locSalon ];
+
+narco3.message = [ "- Está bien, dejadlo ya. Aún hay que preparar dos envíos \
+                     más.<br>\
+                    Los otros dos responden al unísono:<br>\
+                    - De acuerdo, jefe.",
+                   "Supones que siguen todos juntos, aunque solo has oido a dos.",
+                   "Todos reemprenden la marcha por el pasillo.",
+            		   "Alguien camina por el pasillo.",
+            		   "- Calmaos los dos.",
+            		   "Las escaleras crujen bajo el peso de unas fuertes pisadas.",
+            		   "Escuchas moverse el sillón del salón.",
+            		   "Los muelles del sillón emiten un prolongado gemido...",
+                 ];
+narco3.ponEnVigilancia = function() {
+	ctrl.ponDaemon(
+		"narco3-vigilancia",
+		function() {
+			if ( ctrl.places.getCurrentLoc().has( narco3 ) ) {
+				muertePorNarco();
+			}
+		}
+	);
+}
 
 // --- Jugador ---------------------------------------------------------
 var jugador = ctrl.personas.creaPersona( "Alguien",
@@ -1146,6 +1489,15 @@ var jugador = ctrl.personas.creaPersona( "Alguien",
                     "Anacleto, agente de psico-investigaciones.",
                     locExterior
 );
+
+jugador.postAction = function() {
+    if ( ctrl.places.getCurrentLoc().has( narco3 )
+      || ctrl.places.getCurrentLoc().has( narco2 )
+      || ctrl.places.getCurrentLoc().has( narco1 ) )
+    {
+        muertePorNarco();
+    }
+}
 
 jugador.llevaLuz = function() {
         return ( ctrl.estaPresente( objLinterna ) && objLinterna.encendida );
@@ -1214,7 +1566,4 @@ objBrujula.preExamine = function() {
 
 // Arranque ------------------------------------------------------------
 ctrl.personas.cambiaJugador( jugador );
-// ctrl.lugares.ponInicio( locExterior );
-ctrl.lugares.ponInicio( locEmbarcadero );
-objLinterna.mueveA( jugador );
-objLinterna.encendida = true;
+ctrl.lugares.ponInicio( locExterior );
