@@ -27,7 +27,7 @@ Loc.prototype.hayLuz = function() {
 var locExterior = ctrl.lugares.creaLoc(
     "Pequeño claro en el bosque",
     [ "claro", "bosque" ],
-    "Frente a ti, una ${casa, ex casa} ha tenido mejores momentos, aunque \
+    "Frente a ti, una ${casa, ex casa} que ha tenido mejores momentos, aunque \
     a&uacute;n se yergue como una especie de antiguo castillo. \
     Al ${oeste, oeste}, lo que queda \
     de un ${garaje, oeste} asoma entre la ${vegetación, ex vegetacion}. \
@@ -37,11 +37,20 @@ locExterior.pic = "res/abandonada.jpg";
 
 var objCasa = ctrl.creaObj(
         "casa",
-        [ "edificio", "mansion", "palacio", "ruinas" ],
+        [ "edificio", "mansion", "palacio", "ruinas", "castillo" ],
         "Se encuentra entre varios &aacute;rboles, hacia el ${sur, sur}. \
          No invita a adrentarse en su interior. Es comprensible que \
          circulen todo tipo de leyendas sobre estar encantada. La pinta, \
          con el abandono y el bosque a su alrededor, la tiene toda.",
+        locExterior,
+        Ent.Escenario
+);
+
+var objGaraje = ctrl.creaObj(
+        "garaje",
+        [ "galpon", "cochera" ],
+        "Un pequeño garaje, que parece comido por la espesura, \
+         al ${oeste, oeste}.",
         locExterior,
         Ent.Escenario
 );
@@ -94,8 +103,9 @@ objFurgona.preExamine = function() {
 
     if ( ctrl.lugares.limbo.has( objMaletero ) ) {
         objMaletero.mueveA( locExterior );
-        toret += " En la parte trasera está el portón del ${maletero, ex maletero}.";
     }
+
+    toret += " En la parte trasera está el portón del ${maletero, ex maletero}.";
 
     return toret
             + " Pegado al parabrisas, puedes ver un ${portapapeles, ex portapapeles}.";
@@ -223,10 +233,6 @@ var objVegetacion = ctrl.creaObj(
         Ent.Escenario
 );
 
-objCasa.preEnter = function() {
-    action.execute( "go", "s" );
-}
-
 var objPortapapeles = ctrl.creaObj(
         "portapapeles",
         [ "papeles", "porta", "documentos", "parabrisas", "ventosa" ],
@@ -353,9 +359,13 @@ locPorche.preLook = function() {
 	return toret;
 }
 
+locPorche.preEnter = function() {
+    actions.execute( "enter", "casa" );
+}
+
 var objTejadillo = ctrl.creaObj(
         "tejadillo",
-        [ "tejadillo", "tejas", "tejas" ],
+        [ "tejadillo", "tejas", "teja", "tejado" ],
         "El tejadillo del porche ha perdido buena parte de sus tejas.",
         locPorche,
         Ent.Escenario
@@ -372,6 +382,19 @@ var objParedes = ctrl.creaObj(
         locPorche,
         Ent.Escenario
 );
+
+var objCasa = ctrl.creaObj(
+        "casa",
+        [ "edificio", "mansion", "palacio", "ruinas", "castillo" ],
+        "Delante de ti puedes ver el ${tejadillo, ex tejadillo}, \
+        y las ${paredes, ex paredes} de cerca.",
+        locPorche,
+        Ent.Escenario
+);
+objCasa.preEnter = function() {
+    actions.execute( "go", "sur" );
+}
+
 
 var objPuerta = ctrl.creaObj(
         "puerta",
@@ -425,7 +448,7 @@ var objCascotes = ctrl.creaObj(
 
 var objDespensa = ctrl.creaObj(
 	"despensa",
-	[ "estanterias", "estantes", "estante", "cuarto", "cuartito" ],
+	[ "estanterias", "estantes", "estante", "cuarto", "cuartito", "polvo" ],
 	"En la despensa no hay nada, excepto polvo sobre los estantes.",
     locCocina,
 	Ent.Escenario
@@ -506,7 +529,7 @@ objHorno.preShutdown = function() {
 
 var locEscalerasInteriores = ctrl.lugares.creaLoc(
     "Escaleras interiores",
-    [ "escaleras", "peldanos", "escalera", "peldano" ],
+    [ "escaleras", "peldanos", "escalera", "peldano", "barandilla", "luz" ],
     "Las escaleras permiten ${subir, sube} a la primera planta, y \
      ${bajar, baja} al sótano. Allá abajo todo está oscuro, la luz parece \
      incapaz de penetrar las profundidades. \
@@ -537,6 +560,14 @@ locDesvan.pic = "res/desvan.jpg";
 locDesvan.ponSalidaBi( "abajo", locEscalerasInteriores );
 locDesvan.objs.push( objParedes );
 
+var objPolvoDesvan = ctrl.creaObj(
+	"polvo",
+	[ "telas", "araña", "suciedad", "moho", "deshechos" ],
+	"Todo tipo de polvo y deshechos.",
+    locDesvan,
+	Ent.Escenario
+);
+
 var objMuebles = ctrl.creaObj(
 	"muebles",
 	[ "mueble", "mesas", "mesa", "sillas", "silla" ],
@@ -547,7 +578,7 @@ var objMuebles = ctrl.creaObj(
 
 var objChimeneaDesvan = ctrl.creaObj(
 	"chimenea",
-	[ "hogar", "tiro", "lareira" ],
+	[ "hogar", "tiro", "lareira", "agujero" ],
 	"El gran hueco negro del hogar. En la parte superior e inferior, un agujero \
 	 permite acceder al tiro de la misma, que va hacia arriba y hacia \
 	 abajo.",
@@ -565,7 +596,7 @@ objChimeneaDesvan.preShutdown = function() {
 
 var objEstufa = ctrl.creaObj(
 	"estufa",
-	[ "caldera" ],
+	[ "caldera", "tapa" ],
 	"Hoy por hoy, de la estufa solo queda un extraño cilindro de \
 	 hierro. Oxidado, como no.",
     locDesvan,
@@ -612,7 +643,7 @@ objEstufa.preShutdown = function() {
 var objEscaleras = ctrl.creaObj(
 	"escaleras",
 	[ "escalera", "hueco" ],
-	"Las escaleras permiten ${descender, baja} hacia el bajo.",
+	"Las escaleras permiten ${descender, baja} hacia la primera planta.",
 	locDesvan,
 	Ent.Escenario
 );
@@ -623,7 +654,7 @@ objEscaleras.preDescend = function() {
 
 var objVentana = ctrl.creaObj(
 	"ventana",
-	[ "ventana" ],
+	[ "ventana", "luz" ],
 	"Una gran ventana permite el paso de la luz.",
 	locDesvan,
 	Ent.Escenario
@@ -1432,7 +1463,7 @@ narco2.ponEnVigilancia = function() {
     ctrl.ponAlarma( 5, function() {
       if ( locExterior.has( narco2 ) ) {
         narco2.mueveA( locSalon );
-        ctrl.print( "Escuchas a uno de los visitantea entrar \
+        ctrl.print( "Escuchas a uno de los visitantes entrar \
                      atropelladamente en el salón.<br>\
         	     - ¡Hay un coche aparcado ahí fuera!<br>\
         	     - ¡Manteneos alerta!" );

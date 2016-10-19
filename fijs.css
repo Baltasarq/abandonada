@@ -3,7 +3,11 @@ body {
 	background-color: black;
 	color: white;
 	font-familiy: serif;
-	font-size: 16pt
+	font-size: 16pt;
+	width:70%;
+	height:10%;
+    margin-left: 15%;
+    margin-right: 15%
 }
 
 /* Hyperlinks */
@@ -42,13 +46,20 @@ a:visited {
 
 /* Game title */
 #dvTitle {
+    width:70%;
+	height:10%;
+    margin-left: 15%;
+    margin-right: 15%;
 	font-size: 18pt;
 	color: lightgray
 }
 
 /* Game div */
 #dvFi {
-	width: 100%
+	width:70%;
+	height:10%;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 #hrFiSeparator {
@@ -77,23 +88,28 @@ a:visited {
 /* Description text for current room */
 #dvDesc  {
 	color: green;
-	width: 100%;
-	height: 10%
+	width:100%;
+	height:10%;
+	font-familiy: Verdana,Arial,Helvetica;
+	font-size:22px;
 }
 
 /* Game's answer text */
 #dvAnswer {
 	width:100%;
 	height:10%;
-	font-size:14pt;
+    font-familiy: Verdana,Arial,Helvetica;
+	font-size:20px;
 }
 
 /* Input section, prompt, icons... */
 #dvInput {
-	color: white;
-	background-color: black;
-	width: 100%;
-	height: 10%;
+	color:white;
+	background-color:black;
+	width:100%;
+	height:10%;
+	font-familiy: Verdana,Arial,Helvetica;
+	font-size:20px;
 }
 
 #edInput{
@@ -104,6 +120,7 @@ a:visited {
 	border: 1px dotted gray;
 	border-radius: 10px;
 	font-family: monospace;
+    font-size: 14pt;
 	padding: 6px
 }
 
@@ -117,10 +134,10 @@ a:visited {
 }
 
 #dvObjects {
-    font-family: monospace;
-    font-size: 16pt;
-    cursor: crosshair;
-    text-align: center
+    font-familiy: monospace;
+    font-size: 18pt;
+    text-align: center;
+    color: white;
 }
 
 #dvActions {
