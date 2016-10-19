@@ -1128,10 +1128,10 @@ objPuertaPasilloLabo.preOpen = function() {
     var jugador = ctrl.personas.getPlayer();
     var toret = "Permanece firmemente cerrada.";
 
-    if ( jugador.has( objGanzua ) ) {
+    if ( jugador.has( objBarraHierro ) ) {
         toret = "La habilidad que te dio un pasado inconfesable te permite \
                  desbloquear la cerradura de \
-                 la puerta al ${sur, sur} con la ganzúa.";
+                 la puerta al ${sur, sur} con la palanca.";
         objPuertaPasilloLabo.abierta = true;
 
         locEmbarcadero.traeNarcos();
@@ -1302,14 +1302,13 @@ objLancha.preEnter = function() {
 
 objLancha.ponContenedor( true );
 
-var objGanzua = ctrl.creaObj(
-	"ganzúa",
-	[ "ganzua", "ganzuas", "palanca", "palancas", "herramienta" ],
+var objBarraHierro = ctrl.creaObj(
+	"barra",
+	[ "barra", "hierro", "palanca", "herramienta" ],
 	"Permite abrir puertas sin tener las llaves.",
 	objLancha,
 	Ent.Portable
 );
-
 
 var locCurvaPantano = ctrl.lugares.creaLoc(
     "Curva del pantano",
