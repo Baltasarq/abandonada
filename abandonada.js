@@ -27,7 +27,8 @@ Loc.prototype.hayLuz = function() {
 var locExterior = ctrl.lugares.creaLoc(
     "Pequeño claro en el bosque",
     [ "claro", "bosque" ],
-    "Frente a ti, una ${casa, ex casa} que ha tenido mejores momentos, aunque \
+    "Frente a ti, al ${sur, sur}, una ${casa, ex casa} que \
+    ha tenido mejores momentos, aunque \
     a&uacute;n se yergue como una especie de antiguo castillo. \
     Al ${oeste, oeste}, lo que queda \
     de un ${garaje, oeste} asoma entre la ${vegetación, ex vegetacion}. \
@@ -247,12 +248,12 @@ var objPortapapeles = ctrl.creaObj(
 var locGaraje = ctrl.lugares.creaLoc(
     "Garaje derruído",
     [ "garaje", "ruinas" ],
-    "Al ${este, este} se encuentra la explanada junto a la casa. \
-     El garaje ha pasado definitivamente días mejores: los arbustos lo \
+    "El garaje ha pasado definitivamente días mejores: los arbustos lo \
      han invadido todo, junto con el musgo y las enredaderas. \
      La humedad provoca una fuerte sensación de frío y desamparo. \
      Parece como si hubiera querido devorar el ${coche, ex coche} en su \
-     ya verde interior."
+     ya verde interior.<br> \
+     Al ${este, este} se encuentra la explanada junto a la casa."
 );
 locGaraje.objs.push( objVegetacion );
 locGaraje.pic = "res/coche.jpg";
@@ -334,14 +335,15 @@ objCoche.preExamine = function() {
     return toret;
 }
 
-locPorche = ctrl.lugares.creaLoc(
+var locPorche = ctrl.lugares.creaLoc(
     "Entrada a la casa",
     [ "entrada", "porche" ],
-    "La desvencijada ${puerta, ex puerta} preside la entrada de la casa, \
+    "La desvencijada ${puerta, ex puerta}, al ${sur, sur}, \
+     preside la entrada de la casa, \
      que está que se cae. Las ${paredes, ex paredes} han perdido el \
      color debido al paso del tiempo, y del ${tejadillo, ex tejadillo} \
      faltan muchas de tejas. El aspecto en general es \
-     lamentable."
+     lamentable. La explanada se abre hacia el ${norte, norte}."
 );
 locPorche.pic = "res/entrada.jpg";
 locPorche.ponSalidaBi( "norte", locExterior );
@@ -424,14 +426,15 @@ objPuerta.prePull = function() {
     return actions.execute( "open", "puerta" );
 }
 
-locCocina = ctrl.lugares.creaLoc(
+var locCocina = ctrl.lugares.creaLoc(
     "Cocina",
     [ "habitacion", "sala", "estancia" ],
     "Una cocina asolada y llena de ${cascotes, ex cascotes}. La luz entra por un \
      par de ${ventanas, ex ventanas}, que alegran un tanto una estancia tan devastada. \
      Una ${despensa, ex despensa}, una ${encimera, ex encimera} \
      con ${horno, ex horno}, y un ${radiador, ex radiador} es lo \
-     poco que queda en pie."
+     poco que queda en pie. El porche se sitúa al ${norte, norte}, \
+     y es posible adentrarse en la casa por el ${sur, sur}."
 );
 locCocina.pic = "res/cocina.jpg";
 locCocina.ponSalidaBi( "norte", locPorche );
@@ -530,10 +533,14 @@ objHorno.preShutdown = function() {
 var locEscalerasInteriores = ctrl.lugares.creaLoc(
     "Escaleras interiores",
     [ "escaleras", "peldanos", "escalera", "peldano", "barandilla", "luz" ],
-    "Las escaleras permiten ${subir, sube} a la primera planta, y \
-     ${bajar, baja} al sótano. Allá abajo todo está oscuro, la luz parece \
+    "El distribuidor, un lugar estratégico en la casa, \
+     sitúa las ${escaleras, ex escaleras} en el \
+     centro de la misma, a la vez que permite ir al ${norte, norte} \
+     y al ${sur, sur}. Las escaleras a su vez, permiten ${subir, sube} \
+     a la primera planta, y ${bajar, baja} al sótano. \
+     Allá abajo todo está oscuro, la luz parece \
      incapaz de penetrar las profundidades. \
-     Por otra parte, en el piso superior \
+     En contraste, en el piso superior \
      es como si entrara la luz a raudales. Mientras la \
      barandilla es de madera, los peldaños están hechos de \
      cemento, que se muestra muy húmedo y mohoso."
@@ -542,7 +549,7 @@ locEscalerasInteriores.pic = "res/escaleras_interiores.jpg";
 locEscalerasInteriores.ponSalidaBi( "norte", locCocina );
 locEscalerasInteriores.objs.push( objParedes );
 
-locDesvan = ctrl.lugares.creaLoc(
+var locDesvan = ctrl.lugares.creaLoc(
     "Desván",
     [ "desvan", "piso", "estancia", "habitacion" ],
     "El desván de esta gran casa, donde se acumulan todo tipo de \
@@ -582,7 +589,7 @@ var objChimeneaDesvan = ctrl.creaObj(
 	"El gran hueco negro del hogar. En la parte superior e inferior, un agujero \
 	 permite acceder al tiro de la misma, que va hacia arriba y hacia \
 	 abajo.",
-    	locDesvan,
+    locDesvan,
 	Ent.Escenario
 );
 
@@ -608,8 +615,8 @@ objEstufa.preExamine = function() {
 	var toret = objEstufa.desc;
 
 	if ( objEstufa.abierta ) {
-		if ( ctrl.lugares.limbo.has( objPiedra ) ) {
-			objPiedra.mueveA( objEstufa );
+		if ( ctrl.lugares.limbo.has( objPina ) ) {
+			objPina.mueveA( objEstufa );
 		}
 
 		toret = "La tapa está abierta. ";
@@ -672,20 +679,21 @@ objVentana.prePull = function() {
 	return actions.execute( "attack", "ventana" );
 }
 
-var objPiedra = ctrl.creaObj(
-	"piedra",
-	[ "canto", "ladrillo" ],
-	"Pues sí, una piedra. Concretamente, un antiguo ladrillo de la chimenea.",
+var objPina = ctrl.creaObj(
+	"piña",
+	[ "pina" ],
+	"Pues sí, es una piña.",
 	ctrl.lugares.limbo,
 	Ent.Portable
 );
 
-objPiedra.preDrop = function() {
+objPina.preDrop = function() {
 	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
-		var toret = "La piedra cae por el tiro de la chimenea. La oyes \
-			 rebotar hacia abajo, para finalmente depositarse \
-			 con un ruido sordo en la planta inferior.";
-		objPiedra.mueveA( objChimeneaSalon );
+		var toret = "La piña cae por el tiro de la chimenea. La oyes \
+			 rebotar hacia abajo, como rasgando las paredes, \
+			 para finalmente depositarse en la planta inferior. \
+			 La verdad, ha sonado como un espíritu lastimero.";
+		objPina.mueveA( objChimeneaSalon );
 
 		if ( narco1.owner != ctrl.lugares.limbo ) {
 			toret += "<br>Escuchas varias voces dando gritos abajo.<br>\
@@ -709,18 +717,18 @@ objPiedra.preDrop = function() {
 	return dropAction.exe( parser.sentence );
 }
 
-locSalon = ctrl.lugares.creaLoc(
+var locSalon = ctrl.lugares.creaLoc(
     "Salón",
     [ "salon", "sala", "habitacion", "estancia" ],
     "Las ${ventanas, ex ventanas} iluminan un salón en franca \
-     decadencia. Una ${chimenea, ex chimenea} ,\
+     decadencia. Una ${chimenea, ex chimenea}, \
      algunos ${cascotes, ex cascotes}, \
      ${papeles, ex papeles} por el suelo, un mohoso ${sofá, ex sofa}, \
      una vieja ${silla de ruedas, ex silla} \
      e incluso un viejo ${baúl, ex caja}, son el triste reflejo de lo \
      que un día debieron ser. La lejanía de la carretera sin duda ha \
      evitado que estas cosas desaparecieran completamente, aunque hoy \
-     ya no tienen valor."
+     ya no tienen valor. Se puede volver al ${norte, norte}."
 );
 locSalon.pic = "res/salon.jpg";
 locSalon.ponSalidaBi( "norte", locEscalerasInteriores );
@@ -730,7 +738,7 @@ locSalon.objs.push( objParedes );
 
 var objChimeneaSalon = ctrl.creaObj (
 	"chimenea",
-	[ "hogar", "tiro", "lareira" ],
+	[ "hogar", "tiro", "lareira", "agujero" ],
 	"El gran hueco negro del hogar. En la parte superior, un agujero \
 	 permite acceder al tiro de la misma, que va hacia arriba.",
 	locSalon,
@@ -839,8 +847,8 @@ objCaja.preExamine = function() {
     var toret = objCaja.desc;
 
     if ( objCaja.abierta ) {
-        if ( ctrl.lugares.limbo.has( objBarra ) ) {
-            objBarra.moveTo( objCaja );
+        if ( ctrl.lugares.limbo.has( objEscoba ) ) {
+            objEscoba.moveTo( objCaja );
         }
 
         toret = examineAction.exe( parser.sentence );
@@ -861,10 +869,10 @@ objEnredaderas.prePull = function() {
 	return "Nah, me llenaría la cabeza de bichos, y para nada.";
 }
 
-var objBarra = ctrl.creaObj(
-	"barra",
-	[ "barra", "hierro", "cayado" ],
-	"Una barra de hierro, pesada y oxidada.",
+var objEscoba = ctrl.creaObj(
+	"escoba",
+	[],
+	"Una cochambrosa escoba.",
     ctrl.lugares.limbo,
 	Ent.Portable
 );
@@ -983,8 +991,8 @@ objPuertaSotano.prePush = function() {
 var locPasillo = ctrl.lugares.creaLoc(
     "Pasillo",
     [ "pasaje", "subterraneo" ],
-    "El pasillo se interna en la oscuridad. En el extremo \
-     ${oeste, o}, hay una ${puerta, ex puerta}."
+    "El pasillo se interna en la oscuridad hacia el ${este, este}. \
+     En el extremo ${oeste, o}, hay una ${puerta, ex puerta}."
 );
 
 locPasillo.luz = false;
@@ -1079,7 +1087,7 @@ var locPasillo2 = ctrl.lugares.creaLoc(
 
 locPasillo2.luz = false;
 locPasillo2.ponSalidaBi( "arriba", locPasillo );
-locPasillo2.ponSalida( "oeste", locPasillo );
+locPasillo2.ponSalidaBi( "oeste", locPasillo );
 locPasillo2.objs.push( objParedes );
 locPasillo2.objs.push( objEscalerasTrampilla );
 
@@ -1116,7 +1124,7 @@ locPasillo2.preGo = function() {
 
 var objPuertaPasilloLabo = ctrl.creaObj(
     "puerta",
-    [ "acero" ],
+    [ "acero", "cerradura" ],
     "Una recia puerta de acero, de brillante cerradura, \
      se abre en la pared ${sur, sur}. \
      Curioso, no parece abandonada en absoluto.",
@@ -1148,8 +1156,9 @@ var locLabo = ctrl.lugares.creaLoc(
     matraces, filtros, mecheros y otros. \
     Además, en una esquina hay varios ${fardos, ex fardos}. \
     Las ${paredes, ex paredes} han sido recebadas con cemento, \
-    si bien es probable que el río esté próximo, pues pequeñas gotas perlan su superficie. La única salida es la puerta por la que entraste, \
-    al ${norte, norte}."
+    si bien es probable que el río esté próximo, \
+    pues pequeñas gotas perlan su superficie. \
+    La única salida es la puerta por la que entraste, al ${norte, norte}."
 );
 locLabo.ponSalidaBi( "norte", locPasillo2 );
 locLabo.pic = "res/labo.jpg";
@@ -1238,15 +1247,26 @@ locEmbarcadero.traeNarcos = function() {
     }
 }
 
+locEmbarcadero.preGo = function() {
+    var toret = "";
+
+    if ( parser.sentencia.term1 == "este"
+      && locEmbarcadero.has( objLancha ) )
+    {
+        toret = actions.execute( "enter", "lancha" );
+    } else {
+        toret = goAction.exe( parser.sentencia );
+    }
+
+    return toret;
+}
+
 locEmbarcadero.preLook = function() {
     var toret = locEmbarcadero.desc;
 
-    if ( ctrl.personas.getPlayer().has( objLinterna )
-      && objLinterna.encendida )
-    {
-        acciones.ejecuta( "shutdown", "linterna" );
-        toret += "<p>Al notar que llevas la linterna encendida, \
-				  decides apagarla.</p>";
+    if ( locEmbarcadero.has( objLancha ) ) {
+        toret += " Al ${este, este}, en el muelle, puedes ver \
+                  una ${planeadora, ex planeadora}.";
     }
 
     return toret;
@@ -1305,7 +1325,7 @@ objLancha.ponContenedor( true );
 var objBarraHierro = ctrl.creaObj(
 	"barra",
 	[ "barra", "hierro", "palanca", "herramienta" ],
-	"Permite abrir puertas sin tener las llaves.",
+	"Permite forzar cerraduras.",
 	objLancha,
 	Ent.Portable
 );
@@ -1346,7 +1366,7 @@ locSalidaPantano.preGo = function() {
     var toret = "";
 
     if ( parser.sentencia.term1 == "norte" ) {
-        document.getElementById( "dvFrame" ).style.display = "none";
+        document.getElementById( "dvPic" ).style.display = "none";
         document.getElementById( "dvActions" ).style.display = "none";
         document.getElementById( "dvObjects" ).style.display = "none";
         ctrl.terminaJuego(
@@ -1395,8 +1415,9 @@ function mueveNarcos() {
 }
 
 function muertePorNarco() {
-	document.getElementById( "dvFrame" ).style.display = "none";
-	document.getElementById( "tbl-objects-actions" ).style.display = "none";
+	document.getElementById( "dvPic" ).style.display = "none";
+	document.getElementById( "dvActions" ).style.display = "none";
+    document.getElementById( "dvObjects" ).style.display = "none";
 
 	ctrl.terminaJuego( "- ¡Eh!¿Qué haces tú aquí?<br> \
                 Son una banda de criminales. Te das cuenta \
@@ -1593,6 +1614,55 @@ objBrujula.preExamine = function() {
     var loc = ctrl.lugares.devLocActual();
     return objBrujula.desc + " " + actions.getAction( "exits" ).exe();
 }
+
+// Entorno misterioso --------------------------------------------------
+var msgs_misterio = {
+	"msgs": [
+		"Un crujido suena en alguna parte...",
+		"En la lejanía, oyes una gotera dejar caer su carga con estrépito.",
+		"Oyes como una contraventana se golpea, en alguna parte.",
+		"El viento silba por entre los entresijos del viejo edificio.",
+		"Escuchas un golpe sordo que te sobresalta...",
+		"Puedes distinguir un ligero silbido, casi sobrenatural...",
+		"Oyes... ¿pasos?... en la lejanía.",
+		"Crujidos de todo tipo parecen provenir de todas partes.",
+		"Un ruido sordo se infiltra desde el exterior, ¿otra contraventana?",
+		"Una puerta se bate en alguna parte.",
+		"El viento ulula en la distancia.",
+		"Una inesperada corriente de aire frío te roza el cogote.",
+	],
+	"pos": 0,
+	"get": function() {
+		++this.pos;
+
+        if ( this.pos >= this.msgs.length ) {
+            this.pos = 0;
+        }
+
+		return this.msgs[ this.pos - 1 ];
+	}
+};
+
+ctrl.ponDaemon( "misterio", function() {
+	var loc = ctrl.places.getCurrentLoc();
+
+	if ( ( ctrl.getTurns() % 5 ) == 0 ) {
+		if ( loc == locSalon
+		  || loc == locCocina
+		  || loc == locEscalerasInteriores
+		  || loc == locDesvan
+		  || loc == locSotano
+		  || loc == locPasilloEscaleraExterior
+		  || loc == locPasillo
+		  || loc == locLabo
+		  || loc == locPasillo2 )
+		{
+			ctrl.print( msgs_misterio.get() );
+		}
+	}
+
+	return;
+});
 
 // Arranque ------------------------------------------------------------
 ctrl.personas.cambiaJugador( jugador );

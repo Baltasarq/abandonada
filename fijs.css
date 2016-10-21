@@ -89,17 +89,20 @@ a:visited {
 #dvDesc  {
 	color: green;
 	width:100%;
-	height:10%;
-	font-familiy: Verdana,Arial,Helvetica;
+    height:150px;
+    font-familiy: Verdana,Arial,Helvetica;
 	font-size:22px;
+	text-align: justify;
+    overflow-y: auto;
 }
 
 /* Game's answer text */
 #dvAnswer {
 	width:100%;
-	height:10%;
+	height:100px;
     font-familiy: Verdana,Arial,Helvetica;
 	font-size:20px;
+    overflow-y: auto;
 }
 
 /* Input section, prompt, icons... */
