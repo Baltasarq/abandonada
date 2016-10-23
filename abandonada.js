@@ -693,7 +693,7 @@ objPina.preDrop = function() {
 			 La verdad, ha sonado como un espíritu lastimero.";
 
 		objPina.mueveA( objChimeneaSalon );
-		narcosHuyen();
+		toret += narcosHuyen();
 	} else {
         toret = dropAction.exe( parser.sentence );
     }
@@ -719,7 +719,7 @@ objPalo.preDrop = function() {
 			 La verdad, ha sonado como un alma errante.";
 
 		objPalo.mueveA( objChimeneaSalon );
-		narcosHuyen();
+		toret += narcosHuyen();
 	} else {
         toret = dropAction.exe( parser.sentence );
     }
@@ -746,7 +746,7 @@ objLata.preDrop = function() {
 			 por un espectro.";
 
 		objLata.mueveA( objChimeneaSalon );
-		narcosHuyen();
+		toret += narcosHuyen();
 	} else {
         toret = dropAction.exe( parser.sentence );
     }
@@ -1424,6 +1424,8 @@ locSalidaPantano.preGo = function() {
 
 // PNJ's
 function narcosHuyen() {
+    var toret = "";
+
     if ( narco1.owner != ctrl.lugares.limbo ) {
         toret += "<br>Escuchas varias voces dando gritos abajo.<br>\
                 - ¡Joder!¡Es verdad que está encantada!<br>\
@@ -1439,6 +1441,8 @@ function narcosHuyen() {
         narco3.mueveA();
         objLancha.puedeSubir = true;
 	}
+
+	return toret;
 }
 
 function mueveNarcos() {
