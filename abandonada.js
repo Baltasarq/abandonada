@@ -603,7 +603,7 @@ objChimeneaDesvan.preShutdown = function() {
 
 var objEstufa = ctrl.creaObj(
 	"estufa",
-	[ "caldera", "tapa" ],
+	[ "caldera", "tapa", "cilindro" ],
 	"Hoy por hoy, de la estufa solo queda un extraño cilindro de \
 	 hierro. Oxidado, como no.",
     locDesvan,
@@ -615,10 +615,6 @@ objEstufa.preExamine = function() {
 	var toret = objEstufa.desc;
 
 	if ( objEstufa.abierta ) {
-		if ( ctrl.lugares.limbo.has( objPina ) ) {
-			objPina.mueveA( objEstufa );
-		}
-
 		toret = "La tapa está abierta. ";
 		toret += examineAction.exe( parser.sentence );
 	} else {
@@ -633,7 +629,7 @@ objEstufa.preOpen = function() {
 
 	if ( !objEstufa.abierta ) {
 		objEstufa.abierta = true;
-		toret = "Abres la estufa.";
+		toret = "Abres la estufa, revelando varias cosas en su interior.";
 	}
 
 	return toret;
@@ -683,38 +679,79 @@ var objPina = ctrl.creaObj(
 	"piña",
 	[ "pina" ],
 	"Pues sí, es una piña.",
-	ctrl.lugares.limbo,
+	objEstufa,
 	Ent.Portable
 );
 
 objPina.preDrop = function() {
+    var toret = "";
+
 	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
-		var toret = "La piña cae por el tiro de la chimenea. La oyes \
+		toret = "La piña cae por el tiro de la chimenea. La oyes \
 			 rebotar hacia abajo, como rasgando las paredes, \
 			 para finalmente depositarse en la planta inferior. \
 			 La verdad, ha sonado como un espíritu lastimero.";
+
 		objPina.mueveA( objChimeneaSalon );
+		narcosHuyen();
+	} else {
+        toret = dropAction.exe( parser.sentence );
+    }
 
-		if ( narco1.owner != ctrl.lugares.limbo ) {
-			toret += "<br>Escuchas varias voces dando gritos abajo.<br>\
-				  - ¡Joder!¡Es verdad que está encantada!<br>\
-				  - ¡Pero no digáis tonterías!<br>\
-				  - ¡Es mejor que nos larguemos!<br>\
-				  - Pero... ¡maldita sea!<br>\
-				  Pasos apresurados debajo de ti se alejan hacia el este... \
-				  Al poco rato, escuchas el ruido de la lancha, \
-				  alejándose por el río.";
+	return toret;
+}
 
-			narco1.mueveA();
-			narco2.mueveA();
-			narco3.mueveA();
-            objLancha.puedeSubir = true;
-		}
+var objPalo = ctrl.creaObj(
+	"palo",
+	[ "palo" ],
+	"Pues sí, es una palo.",
+	objEstufa,
+	Ent.Portable
+);
 
-		return toret;
-	}
+objPalo.preDrop = function() {
+    var toret = "";
 
-	return dropAction.exe( parser.sentence );
+	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
+		toret = "El palo cae por el tiro de la chimenea. Lo oyes \
+			 rebotar hacia abajo, golpeándose con las paredes, \
+			 para finalmente depositarse en la planta inferior. \
+			 La verdad, ha sonado como un alma errante.";
+
+		objPalo.mueveA( objChimeneaSalon );
+		narcosHuyen();
+	} else {
+        toret = dropAction.exe( parser.sentence );
+    }
+
+	return toret;
+}
+
+var objLata = ctrl.creaObj(
+	"lata",
+	[ "lata" ],
+	"Una vieja lata oxidada.",
+	objEstufa,
+	Ent.Portable
+);
+
+objLata.preDrop = function() {
+    var toret = "";
+
+	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
+		toret = "La lata cae por el tiro de la chimenea. La oyes \
+			 rebotar hacia abajo, provocando ecos metálicos en su chocar, \
+			 para finalmente depositarse en la planta inferior. \
+			 La verdad, ha sonado como una larga cadena arrastrada \
+			 por un espectro.";
+
+		objLata.mueveA( objChimeneaSalon );
+		narcosHuyen();
+	} else {
+        toret = dropAction.exe( parser.sentence );
+    }
+
+	return toret;
 }
 
 var locSalon = ctrl.lugares.creaLoc(
@@ -1386,6 +1423,24 @@ locSalidaPantano.preGo = function() {
 
 
 // PNJ's
+function narcosHuyen() {
+    if ( narco1.owner != ctrl.lugares.limbo ) {
+        toret += "<br>Escuchas varias voces dando gritos abajo.<br>\
+                - ¡Joder!¡Es verdad que está encantada!<br>\
+                - ¡Pero no digáis tonterías!<br>\
+                - ¡Es mejor que nos larguemos!<br>\
+                - Pero... ¡maldita sea!<br>\
+                Pasos apresurados debajo de ti se alejan hacia el este... \
+                Al poco rato, escuchas el ruido de la lancha, \
+                alejándose por el río.";
+
+        narco1.mueveA();
+        narco2.mueveA();
+        narco3.mueveA();
+        objLancha.puedeSubir = true;
+	}
+}
+
 function mueveNarcos() {
   var narcos = [ narco1, narco2, narco3 ];
 
