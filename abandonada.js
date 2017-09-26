@@ -14,13 +14,13 @@ ctrl.ponIntro( "Como agente de Psico-investigaciones, \
                 Así, tus clientes podr&aacute;n comprarla sin temor." );
 ctrl.ponImg( "res/abandonada.jpg" );
 ctrl.ponAutor( "Baltasarq" );
-ctrl.ponVersion( "20161024" );
+ctrl.ponVersion( "20170922" );
 
 // Luz ----------------------------------------------------------------
 Loc.prototype.luz = true;
 Loc.prototype.hayLuz = function() {
         return ( this.luz || jugador.llevaLuz() );
-}
+};
 
 // *** Locs --
 
@@ -36,7 +36,7 @@ var locExterior = ctrl.lugares.creaLoc(
 );
 locExterior.pic = "res/abandonada.jpg";
 
-var objCasa = ctrl.creaObj(
+ctrl.creaObj(
         "casa",
         [ "edificio", "mansion", "palacio", "ruinas", "castillo" ],
         "Se encuentra entre varios &aacute;rboles, hacia el ${sur, sur}. \
@@ -47,7 +47,7 @@ var objCasa = ctrl.creaObj(
         Ent.Escenario
 );
 
-var objGaraje = ctrl.creaObj(
+ctrl.creaObj(
         "garaje",
         [ "galpon", "cochera" ],
         "Un pequeño garaje, que parece comido por la espesura, \
@@ -80,24 +80,24 @@ objFurgona.preStart = function() {
     }
 
     return toret;
-}
+};
 
 objFurgona.preShutdown = function() {
     return "Para eso, deber&iacute;a intentar arrancarla... ¡y no lo hace!";
-}
+};
 
 objFurgona.prePush = function() {
     return "¿La media hora de camino hasta aqu&iacute;? Si a&uacute;n \
             hubiera una cuesta abajo... pero no la hay.";
-}
+};
 
 objFurgona.preAttack = function() {
     return "Le das una buena patada en una de las ruedas. Te sientes un poco mejor.";
-}
+};
 
 objFurgona.preOpen = function() {
     return "Ya est&aacute; abierto.";
-}
+};
 
 objFurgona.preExamine = function() {
     var toret = objFurgona.desc;
@@ -110,7 +110,7 @@ objFurgona.preExamine = function() {
 
     return toret
             + " Pegado al parabrisas, puedes ver un ${portapapeles, ex portapapeles}.";
-}
+};
 
 var objMaletero = ctrl.creaObj(
         "maletero",
@@ -133,7 +133,7 @@ objMaletero.preOpen = function() {
     }
 
     return toret;
-}
+};
 
 objMaletero.preClose = function() {
     var toret = "Mejor queda abierto, por si hace falta algo más.";
@@ -143,12 +143,12 @@ objMaletero.preClose = function() {
     }
 
     return toret;
-}
+};
 
 objMaletero.preExamine = function() {
-    if ( objMaletero.cerrado ) {
-        return objMaletero.desc;
-    } else {
+    var toret = objMaletero.desc;
+
+    if ( !objMaletero.cerrado ) {
         if ( ctrl.lugares.limbo.has( objLinterna ) ) {
             objLinterna.mueveA( objMaletero );
         }
@@ -157,11 +157,11 @@ objMaletero.preExamine = function() {
             objAceite.mueveA( objMaletero );
         }
 
-        return examineAction.exe( parser.sentence );
+        toret = examineAction.exe( parser.sentence );
     }
 
-    return;
-}
+    return toret;
+};
 
 var objAceite = ctrl.creaObj(
         "aceite",
@@ -188,13 +188,13 @@ objLinterna.preStart = function() {
 
         // Redescribe
         acciones.ejecuta( "look" );
-	parser.sentencia.obj1 = objLinterna;
+        parser.sentencia.obj1 = objLinterna;
     } else {
         toret += " Ya estaba encendida.";
     }
 
     return toret;
-}
+};
 
 objLinterna.preShutdown = function() {
     var toret = "Has pulsado el interruptor de la linterna.";
@@ -211,7 +211,7 @@ objLinterna.preShutdown = function() {
     }
 
     return toret;
-}
+};
 
 objLinterna.preExamine = function() {
     var toret = objLinterna.desc;
@@ -223,7 +223,7 @@ objLinterna.preExamine = function() {
     }
 
     return toret;
-}
+};
 
 var objVegetacion = ctrl.creaObj(
         "vegetación",
@@ -234,7 +234,7 @@ var objVegetacion = ctrl.creaObj(
         Ent.Escenario
 );
 
-var objPortapapeles = ctrl.creaObj(
+ctrl.creaObj(
         "portapapeles",
         [ "papeles", "porta", "documentos", "parabrisas", "ventosa" ],
         "Pegado al parabrisas mediante una ventosa, un portapapeles sujeta \
@@ -271,19 +271,19 @@ var objCoche = ctrl.creaObj(
 
 objCoche.prePush = function() {
     return "Eso no hay ya quien lo mueva del sitio.";
-}
+};
 
 objCoche.preAttack = function() {
     return "Ya est&aacute; hecho polvo...";
-}
+};
 
 objCoche.preStart = function() {
     return "Sí, claro.";
-}
+};
 
 objCoche.preShutdown = function() {
     return "¡Si ni siquiera va a arrancar!";
-}
+};
 
 objCoche.abierto = false;
 objCoche.preOpen = function() {
@@ -298,7 +298,7 @@ objCoche.preOpen = function() {
     }
 
     return toret;
-}
+};
 
 objCoche.preClose = function() {
     var toret =  "La portezuela tiene pinta de caerse encima de tu pie si te \
@@ -310,9 +310,9 @@ objCoche.preClose = function() {
     }
 
     return toret;
-}
+};
 
-objLlaves =  ctrl.creaObj(
+var objLlaves =  ctrl.creaObj(
         "llaves",
         [ "llaves", "llave" ],
         "Herrumbosas llaves. Parece que hay más aparte de las del coche.",
@@ -333,7 +333,7 @@ objCoche.preExamine = function() {
     }
 
     return toret;
-}
+};
 
 var locPorche = ctrl.lugares.creaLoc(
     "Entrada a la casa",
@@ -354,18 +354,18 @@ locPorche.preLook = function() {
 	++locPorche.visitas;
 	if ( locPorche.visitas < 3 ) {
 		toret += " Supones que tus clientes habrán de tener mucho \
-				  dinero y paciencia para permitirse invertir aquí y, \
-				  con mucho tiempo, tornarlo habitable."
+                    dinero y paciencia para permitirse invertir aquí y, \
+                    con mucho tiempo, tornarlo habitable.";
 	}
 
 	return toret;
-}
+};
 
 locPorche.preEnter = function() {
     actions.execute( "enter", "casa" );
-}
+};
 
-var objTejadillo = ctrl.creaObj(
+ctrl.creaObj(
         "tejadillo",
         [ "tejadillo", "tejas", "teja", "tejado" ],
         "El tejadillo del porche ha perdido buena parte de sus tejas.",
@@ -385,7 +385,7 @@ var objParedes = ctrl.creaObj(
         Ent.Escenario
 );
 
-var objCasa = ctrl.creaObj(
+var objFachadaCasa = ctrl.creaObj(
         "casa",
         [ "edificio", "mansion", "palacio", "ruinas", "castillo" ],
         "Delante de ti puedes ver el ${tejadillo, ex tejadillo}, \
@@ -393,10 +393,9 @@ var objCasa = ctrl.creaObj(
         locPorche,
         Ent.Escenario
 );
-objCasa.preEnter = function() {
+objFachadaCasa.preEnter = function() {
     actions.execute( "go", "sur" );
-}
-
+};
 
 var objPuerta = ctrl.creaObj(
         "puerta",
@@ -408,23 +407,23 @@ var objPuerta = ctrl.creaObj(
 
 objPuerta.preClose = function() {
     return "Nadie podría volver a hacerla encajar en el marco.";
-}
+};
 
 objPuerta.preOpen = function() {
     return "Tiras un poco de ella... nah, ya está tan abierta como es posible.";
-}
+};
 
 objPuerta.preAttack = function() {
     return "Tus golpes rebotan contra la podrida puerta, inútilmente.";
-}
+};
 
 objPuerta.prePush = function() {
     return actions.execute( "close", "puerta" );
-}
+};
 
 objPuerta.prePull = function() {
     return actions.execute( "open", "puerta" );
-}
+};
 
 var locCocina = ctrl.lugares.creaLoc(
     "Cocina",
@@ -449,7 +448,7 @@ var objCascotes = ctrl.creaObj(
 	Ent.Escenario
 );
 
-var objDespensa = ctrl.creaObj(
+ctrl.creaObj(
 	"despensa",
 	[ "estanterias", "estantes", "estante", "cuarto", "cuartito", "polvo" ],
 	"En la despensa no hay nada, excepto polvo sobre los estantes.",
@@ -457,7 +456,7 @@ var objDespensa = ctrl.creaObj(
 	Ent.Escenario
 );
 
-objVentanas = ctrl.creaObj(
+var objVentanas = ctrl.creaObj(
 	"ventanas",
 	[ "ventana", "ventanuco" ],
 	"Un par de ventanas permiten que entre la luz del exterior. Bueno, \
@@ -468,17 +467,17 @@ objVentanas = ctrl.creaObj(
 
 objVentanas.preAttack = function() {
 	return "Tienen un enrejado de hierro muy fuerte, sería fútil.";
-}
+};
 
 objVentanas.prePush = function() {
 	return actions.execute( "attack", "ventana" );
-}
+};
 
 objVentanas.prePull = function() {
 	return actions.execute( "attack", "ventana" );
-}
+};
 
-objRadiador = ctrl.creaObj(
+var objRadiador = ctrl.creaObj(
 	"radiador",
 	[ "calefactor", "valvula", "llave" ],
 	"Un viejo radiador, probablemente calentado por agua. Quizás la \
@@ -490,13 +489,13 @@ objRadiador = ctrl.creaObj(
 
 objRadiador.preStart = function() {
     return "Giras la válvula, aún sabiendo que no tendrá ningún efecto.";
-}
+};
 
 objRadiador.preShutdown = function() {
     return actions.execute( "start", "radiador" );
-}
+};
 
-objEncimera = ctrl.creaObj(
+ctrl.creaObj(
 	"encimera",
 	[ "mesado" ],
 	"Una vieja y rota encimera de mármol blanco.",
@@ -504,7 +503,7 @@ objEncimera = ctrl.creaObj(
 	Ent.Escenario
 );
 
-objHorno = ctrl.creaObj(
+var objHorno = ctrl.creaObj(
 	"horno",
 	[ "mando", "mandos", "portezuela", "porton" ],
 	"El viejo horno aún tiene los mandos y la portezuela, pero poco \
@@ -516,19 +515,19 @@ objHorno = ctrl.creaObj(
 
 objHorno.preOpen = function() {
     return "Tiras con todas tus fuerzas, pero... ¡no se abre!";
-}
+};
 
 objHorno.prePull = function() {
     return actions.execute( "open", "horno" );
-}
+};
 
 objHorno.preStart = function() {
     return "Ni de broma va a volver esto a la vida.";
-}
+};
 
 objHorno.preShutdown = function() {
     return actions.execute( "start", "horno" );
-}
+};
 
 var locEscalerasInteriores = ctrl.lugares.creaLoc(
     "Escaleras interiores",
@@ -567,7 +566,7 @@ locDesvan.pic = "res/desvan.jpg";
 locDesvan.ponSalidaBi( "abajo", locEscalerasInteriores );
 locDesvan.objs.push( objParedes );
 
-var objPolvoDesvan = ctrl.creaObj(
+ctrl.creaObj(
 	"polvo",
 	[ "telas", "araña", "suciedad", "moho", "deshechos" ],
 	"Todo tipo de polvo y deshechos.",
@@ -575,7 +574,7 @@ var objPolvoDesvan = ctrl.creaObj(
 	Ent.Escenario
 );
 
-var objMuebles = ctrl.creaObj(
+ctrl.creaObj(
 	"muebles",
 	[ "mueble", "mesas", "mesa", "sillas", "silla" ],
 	"Todo tipo de muebles, podridos e inservibles.",
@@ -584,28 +583,29 @@ var objMuebles = ctrl.creaObj(
 );
 
 var objChimeneaDesvan = ctrl.creaObj(
-	"chimenea",
-	[ "hogar", "tiro", "lareira", "agujero" ],
-	"El gran hueco negro del hogar. En la parte superior e inferior, un agujero \
-	 permite acceder al tiro de la misma, que va hacia arriba y hacia \
-	 abajo.",
+    "chimenea",
+    [ "hogar", "tiro", "lareira", "agujero" ],
+    "El gran hueco negro del hogar. \
+        En la parte superior e inferior, un agujero \
+        permite acceder al tiro de la misma, que va hacia arriba y hacia \
+        abajo.",
     locDesvan,
-	Ent.Escenario
+    Ent.Escenario
 );
 
 objChimeneaDesvan.preStart = function() {
 	return "¿Para qué? Ni que hiciera frío...";
-}
+};
 
 objChimeneaDesvan.preShutdown = function() {
 	return "Ahora mismo está apagada.";
-}
+};
 
 var objEstufa = ctrl.creaObj(
 	"estufa",
 	[ "caldera", "tapa", "cilindro" ],
 	"Hoy por hoy, de la estufa solo queda un extraño cilindro de \
-	 hierro. Oxidado, como no.",
+        hierro. Oxidado, como no.",
     locDesvan,
 	Ent.Escenario
 );
@@ -622,26 +622,27 @@ objEstufa.preExamine = function() {
 	}
 
 	return toret;
-}
+};
 
 objEstufa.preOpen = function() {
 	var toret = "Ya estaba abierta.";
 
 	if ( !objEstufa.abierta ) {
 		objEstufa.abierta = true;
+        ctrl.logros.logrado( "curioson" );
 		toret = "Abres la estufa, revelando varias cosas en su interior.";
 	}
 
 	return toret;
-}
+};
 
 objEstufa.preStart = function() {
 	return "Está hecha polvo, no tengo leña, y además, no hace frío.";
-}
+};
 
 objEstufa.preShutdown = function() {
 	return "La estufa está igual que la chimenea: apagada.";
-}
+};
 
 var objEscaleras = ctrl.creaObj(
 	"escaleras",
@@ -653,7 +654,7 @@ var objEscaleras = ctrl.creaObj(
 
 objEscaleras.preDescend = function() {
 	return actions.execute( "Go", "abajo" );
-}
+};
 
 var objVentana = ctrl.creaObj(
 	"ventana",
@@ -665,15 +666,15 @@ var objVentana = ctrl.creaObj(
 
 objVentana.preAttack = function() {
 	return "Tiene un enrejado de hierro muy fuerte, sería fútil.";
-}
+};
 
 objVentana.prePush = function() {
 	return actions.execute( "attack", "ventana" );
-}
+};
 
 objVentana.prePull = function() {
 	return actions.execute( "attack", "ventana" );
-}
+};
 
 var objPina = ctrl.creaObj(
 	"piña",
@@ -688,18 +689,19 @@ objPina.preDrop = function() {
 
 	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
 		toret = "La piña cae por el tiro de la chimenea. La oyes \
-			 rebotar hacia abajo, como rasgando las paredes, \
-			 para finalmente depositarse en la planta inferior. \
-			 La verdad, ha sonado como un espíritu lastimero.";
+                    rebotar hacia abajo, como rasgando las paredes, \
+                    para finalmente depositarse en la planta inferior. \
+                    La verdad, ha sonado como un espíritu lastimero.";
 
 		objPina.mueveA( objChimeneaSalon );
 		toret += narcosHuyen();
+        ctrl.logros.logrado( "experimentador" );
 	} else {
         toret = dropAction.exe( parser.sentence );
     }
 
 	return toret;
-}
+};
 
 var objPalo = ctrl.creaObj(
 	"palo",
@@ -714,10 +716,11 @@ objPalo.preDrop = function() {
 
 	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
 		toret = "El palo cae por el tiro de la chimenea. Lo oyes \
-			 rebotar hacia abajo, golpeándose con las paredes, \
-			 para finalmente depositarse en la planta inferior. \
-			 La verdad, ha sonado como un alma errante.";
-
+                    rebotar hacia abajo, golpeándose con las paredes, \
+                    para finalmente depositarse en la planta inferior. \
+                    La verdad, ha sonado como un alma errante.";
+        
+        ctrl.logros.logrado( "experimentador" );
 		objPalo.mueveA( objChimeneaSalon );
 		toret += narcosHuyen();
 	} else {
@@ -725,7 +728,7 @@ objPalo.preDrop = function() {
     }
 
 	return toret;
-}
+};
 
 var objLata = ctrl.creaObj(
 	"lata",
@@ -740,11 +743,12 @@ objLata.preDrop = function() {
 
 	if ( parser.sentence.obj2 == objChimeneaDesvan ) {
 		toret = "La lata cae por el tiro de la chimenea. La oyes \
-			 rebotar hacia abajo, provocando ecos metálicos en su chocar, \
-			 para finalmente depositarse en la planta inferior. \
-			 La verdad, ha sonado como una larga cadena arrastrada \
-			 por un espectro.";
+                    rebotar hacia abajo, provocando ecos metálicos en su chocar, \
+                    para finalmente depositarse en la planta inferior. \
+                    La verdad, ha sonado como una larga cadena arrastrada \
+                    por un espectro.";
 
+        ctrl.logros.logrado( "experimentador" );
 		objLata.mueveA( objChimeneaSalon );
 		toret += narcosHuyen();
 	} else {
@@ -752,7 +756,7 @@ objLata.preDrop = function() {
     }
 
 	return toret;
-}
+};
 
 var locSalon = ctrl.lugares.creaLoc(
     "Salón",
@@ -777,7 +781,7 @@ var objChimeneaSalon = ctrl.creaObj (
 	"chimenea",
 	[ "hogar", "tiro", "lareira", "agujero" ],
 	"El gran hueco negro del hogar. En la parte superior, un agujero \
-	 permite acceder al tiro de la misma, que va hacia arriba.",
+        permite acceder al tiro de la misma, que va hacia arriba.",
 	locSalon,
 	Ent.Escenario
 );
@@ -785,13 +789,13 @@ var objChimeneaSalon = ctrl.creaObj (
 objChimeneaSalon.ponContenedor();
 objChimeneaSalon.preStart = function() {
 	return "¿Para qué? Ni que hiciera frío...";
-}
+};
 
 objChimeneaSalon.preShutdown = function() {
 	return "Ahora mismo está apagada.";
-}
+};
 
-var objSofa = ctrl.creaObj(
+ctrl.creaObj(
 	"sofá",
 	[ "sofa", "tresillo", "sillon" ],
 	"El sofá ha visto, sin duda, mejores días. Podrido y mohoso, \
@@ -811,17 +815,18 @@ var objGuante = ctrl.creaObj(
 objGuante.ponPrenda();
 objGuante.preTake = function() {
     return "Pero si está asqueroso... mejor lo dejo donde está.";
-}
+};
 
 objGuante.preWear = function() {
     return "Que no, que no, ¡qué asco!... yo no me pongo eso.";
-}
+};
 
 objGuante.preAttack = function() {
+    ctrl.logros.logrado( "limpiador" );
     return "Entre el polvo acumulado dentro del guante, y el que hay \
 			por fuera de él, se ha montado una nube de polvo que tarda \
 			aún un buen rato en disiparse.";
-}
+};
 
 var objSillaRuedas = ctrl.creaObj(
 	"silla",
@@ -833,13 +838,13 @@ var objSillaRuedas = ctrl.creaObj(
 
 objSillaRuedas.prePull = function() {
     return "Está tan mohosa y oxidada que ni se mueve.";
-}
+};
 
 objSillaRuedas.prePush = function() {
     return actions.execute( "pull", "silla" );
-}
+};
 
-var objPapeles = ctrl.creaObj(
+ctrl.creaObj(
 	"papeles",
 	[ "papel", "páginas", "página" ],
 	"Papeles de todo tipo: antiguas facturas, páginas de viejos libros... inservibles.",
@@ -894,7 +899,7 @@ objCaja.preExamine = function() {
     return toret;
 }
 
-objEnredaderas = ctrl.creaObj(
+var objEnredaderas = ctrl.creaObj(
 	"enredaderas",
 	[ "enredadera", "vegetacion" ],
 	"Varias enredaderas se descuelgan de un agujero en el techo.",
@@ -983,12 +988,12 @@ objPuertaSotano.preOpen = function() {
 		if ( ctrl.isPresent( objLlaves ) ) {
 			if ( ctrl.isPresent( objAceite ) ) {
 				toret = "Echas un poco de aceite sobre la llave, y \
-						  la introduces en la cerradura, consiguiendo \
-						  hacerla girar suavemente.";
+                            la introduces en la cerradura, consiguiendo \
+                            hacerla girar suavemente.";
 				objPuertaSotano.abierta = true;
 			} else {
 				toret = "La llave no gira, hace mucho que esta cerradura \
-						 no se usa.";
+                            no se usa.";
 			}
 		} else {
 			toret = "No se abre, está cerrada con llave.";
@@ -1033,7 +1038,7 @@ var locPasillo = ctrl.lugares.creaLoc(
 );
 
 locPasillo.luz = false;
-locPasillo.visitasConLuz = 0;
+locPasillo.visitadoConLuz = false;
 locPasillo.ponSalidaBi( "oeste", locSotano );
 locPasillo.objs.push( objParedes );
 
@@ -1041,17 +1046,19 @@ locPasillo.preLook = function() {
 	var toret = locPasillo.desc;
 
 	if ( locPasillo.hayLuz() ) {
-		locPasillo.visitasConLuz += 1;
 		locPasillo.pic = "res/trampilla.jpg";
 		objEscalerasTrampilla.mueveA( locPasillo );
-		toret += " Debajo, en el suelo, hay unos \
-				  ${peldaños, ex escaleras} que permiten \
-				  ${continuar bajando, baja}.";
+        toret = "El pasillo en penumbra se extiende \
+        desde una ${puerta, ex puerta} al ${oeste, oeste}, \
+        hasta unas oscuras y empinadas escaleras que bajan \
+        hacia el ${este, este}.";
 
-		if ( locPasillo.visitasConLuz < 3 ) {
-			toret += " Está realmente oscuro, por eso no los habías \
-					  visto antes. Podías haberte matado.";
-		}
+		if ( !locPasillo.visitadoConLuz ) {
+			toret += " Está realmente oscuro, por eso no las habías \
+                        visto antes. Podías haberte matado.";
+        }
+
+        locPasillo.visitadoConLuz = true;
 	} else {
 		locPasillo.pic = null;
 		objEscalerasTrampilla.mueveA();
@@ -1059,13 +1066,13 @@ locPasillo.preLook = function() {
 	}
 
 	return toret;
-}
+};
 
-locPasillo.preGo = function(s) {
+locPasillo.preGo = function() {
 	var toret = "";
 
 	if ( locPasillo.hayLuz()
-	  || parser.sentencia.term1 == "oeste" )
+      || parser.sentencia.term1 == "oeste" )
 	{
 		toret = goAction.exe( parser.sentencia );
 	} else {
@@ -1073,9 +1080,9 @@ locPasillo.preGo = function(s) {
 	}
 
 	return toret;
-}
+};
 
-var objPuertaSotanoFalsa = ctrl.creaObj(
+ctrl.creaObj(
 	"puerta",
 	[ "hoja" ],
 	"Una puerta blanca, bastante sucia. Está abierta.",
@@ -1086,7 +1093,7 @@ var objPuertaSotanoFalsa = ctrl.creaObj(
 var objEscalerasTrampilla = ctrl.creaObj(
 	"escaleras",
 	[ "peldanos", "escalera", "escalones", "escalon", "polvo",
-	  "piedras", "piedra", "suciedad" ],
+        "piedras", "piedra", "suciedad" ],
 	"Unos peldaños polvorientos permiten ${bajar, baja}.",
 	locPasillo,
 	Ent.Escenario
@@ -1102,23 +1109,25 @@ objEscalerasTrampilla.preExamine = function() {
 	}
 
 	return toret;
-}
+};
 
 
 objEscalerasTrampilla.preDescend = function() {
 	return acciones.ejecuta( "Go", "abajo" );
-}
+};
 
 objEscalerasTrampilla.preClimb = function() {
 	return acciones.ejecuta( "Go", "arriba" );
-}
+};
 
 var locPasillo2 = ctrl.lugares.creaLoc(
     "Pasillo",
     [ "pasaje", "subterraneo" ],
     "El pasillo se extiende de ${oeste, oeste} a ${este, este}. \
-     En el extremo oeste, hay unos ${peldaños de piedra, ex escaleras} \
-     que permiten ${subir, sube}. En la pared sur del corredor, puedes ver \
+     En el extremo oeste, el pasillo asciende de nuevo \
+     al nivel de la casa mediante unos \
+     ${peldaños de piedra, ex escaleras} \
+     En la pared sur del corredor, puedes ver \
      una ${puerta, ex puerta}."
 );
 
@@ -1178,7 +1187,7 @@ objPuertaPasilloLabo.preOpen = function() {
                  desbloquear la cerradura de \
                  la puerta al ${sur, sur} con la palanca.";
         objPuertaPasilloLabo.abierta = true;
-
+        ctrl.logros.logrado( "ladronzuelo" );
         locEmbarcadero.traeNarcos();
     }
 
@@ -1200,7 +1209,7 @@ var locLabo = ctrl.lugares.creaLoc(
 locLabo.ponSalidaBi( "norte", locPasillo2 );
 locLabo.pic = "res/labo.jpg";
 
-var objParedes = ctrl.creaObj(
+ctrl.creaObj(
 	"paredes",
 	[ "pared", "muro", "muros", "cemento", "gota", "gotas", "moho" ],
 	"Son unos mohosos muros de cemento, perlados de gotas de agua.",
@@ -1208,16 +1217,16 @@ var objParedes = ctrl.creaObj(
 	Ent.Escenario
 );
 
-var objInstrumentos = ctrl.creaObj(
+ctrl.creaObj(
 	"instrumentos",
 	[ "instrumento", "materiales", "material" ],
 	"El material de laboratorio se te antoja indiferente, más allá de reconocer \
-	 algunos instrumentos.",
+        algunos instrumentos.",
 	locLabo,
 	Ent.Escenario
 );
 
-var objFardos = ctrl.creaObj(
+ctrl.creaObj(
 	"fardos",
 	[ "fardo", "sacos", "saco" ],
 	"Son envoltorios de plástico que parecen contener un polvo blanco \
@@ -1226,7 +1235,7 @@ var objFardos = ctrl.creaObj(
 	Ent.Escenario
 );
 
-var objPuertaLabo = ctrl.creaObj(
+ctrl.creaObj(
 	"puerta",
 	[ "salida" ],
 	"La puerta del labo, al ${norte, norte}.",
@@ -1240,8 +1249,8 @@ var locPasilloEscaleraExterior = ctrl.lugares.creaLoc(
     "El pasillo se extiende de ${oeste, oeste} a ${este, este}, \
      donde se aprecia una clara luz que parece provenir directamente \
      del exterior. En el extremo este, \
-     hay unos ${peldaños de piedra, ex escaleras} \
-     que permiten ${subir, sube}."
+     la salida se eleva hacia la luz mediante unos \
+     ${peldaños de piedra, ex escaleras}."
 );
 
 locPasilloEscaleraExterior.luz = true;
@@ -1298,17 +1307,6 @@ locEmbarcadero.preGo = function() {
     return toret;
 }
 
-locEmbarcadero.preLook = function() {
-    var toret = locEmbarcadero.desc;
-
-    if ( locEmbarcadero.has( objLancha ) ) {
-        toret += " Al ${este, este}, en el muelle, puedes ver \
-                  una ${planeadora, ex planeadora}.";
-    }
-
-    return toret;
-}
-
 var objEmbarcadero = ctrl.creaObj(
 	"muelle",
 	[ "desembarcadero", "atracadero", "apeadero" ],
@@ -1322,6 +1320,9 @@ objEmbarcadero.preExamine = function() {
 
   if ( objLancha.owner == ctrl.lugares.limbo ) {
     objLancha.moveTo( locEmbarcadero );
+    locEmbarcadero.desc += " Al ${este, este}, en el muelle, puedes ver \
+                            una ${planeadora, ex planeadora}.";
+    ctrl.lugares.actualizaDesc();
     toret += "<br>Atracada al precario muelle, puedes ver una \
     ${planeadora, ex planeadora}.";
   }
@@ -1332,7 +1333,8 @@ objEmbarcadero.preExamine = function() {
 var objLancha = ctrl.creaObj(
   "lancha",
 	[ "bote", "planeador", "planeadora", "motora" ],
-	"Se trata de una de esas planeadoras, con una especie de ventilador detrás.",
+	"Se trata de una de esas planeadoras, \
+	con una especie de ventilador detrás.",
 	ctrl.lugares.limbo,
 	Ent.Escenario
 );
@@ -1351,7 +1353,20 @@ objLancha.preEnter = function() {
         locEmbarcadero.traeNarcos();
     } else {
         ctrl.goto( locCurvaPantano );
-        toret = "La lancha ronronea...";
+        toret = "Acomodarte en la planeadora, \
+                 encenderla y disfrutar del placer de conducir \
+                 sobre las aguas del pantano ha sido todo uno.";
+        ctrl.ponDaemon(
+            "planeadora",
+            function() {
+                if ( ctrl.lugares.devLocActual() != locEmbarcadero ) {
+                    ctrl.print( "La lancha ronronea, \
+                                 deslizándose suavemente sobre las aguas." );
+                } else {
+                    ctrl.borraDaemon( "planeadora" );
+                }
+            }
+        );
     }
 
     return toret;
@@ -1376,6 +1391,10 @@ var locCurvaPantano = ctrl.lugares.creaLoc(
 );
 locCurvaPantano.pic = "res/curva_pantano.jpg";
 locCurvaPantano.ponSalida( "oeste", locEmbarcadero );
+
+locCurvaPantano.postExamine = function() {
+    ctrl.logros.logrado( "piloto" );
+}
 
 var locPantanoTupido = ctrl.lugares.creaLoc(
     "Pantano tupido",
@@ -1411,7 +1430,8 @@ locSalidaPantano.preGo = function() {
                 &iexcl;En menudo lío te has metido sin quererlo!<br/> \
                 Respiras profundamente, ya con calma, mientras la lancha se \
                 desliza por la corriente, formando ondas cenagosas a su paso. \
-                <p>&iexcl;Lo has conseguido!</p>",
+                <p>&iexcl;Lo has conseguido!</p>\
+                <p>Logros:<br/>" + ctrl.logros.completadosComoTexto() + "</p>",
             "res/salida_pantano.jpg"
         );
     } else {
@@ -1427,11 +1447,11 @@ function narcosHuyen() {
     var toret = "";
 
     if ( narco1.owner != ctrl.lugares.limbo ) {
-        toret += "<br>Escuchas varias voces dando gritos abajo.<br>\
-                - ¡Joder!¡Es verdad que está encantada!<br>\
-                - ¡Pero no digáis tonterías!<br>\
-                - ¡Es mejor que nos larguemos!<br>\
-                - Pero... ¡maldita sea!<br>\
+        toret += "<br>Escuchas varias voces dando gritos abajo.<br/><br/>\
+                - ¡Joder!¡Es verdad que está encantada!<br/>\
+                - ¡Pero no digáis tonterías!<br/>\
+                - ¡Es mejor que nos larguemos!<br/>\
+                - Pero... ¡maldita sea!<br/><br/>\
                 Pasos apresurados debajo de ti se alejan hacia el este... \
                 Al poco rato, escuchas el ruido de la lancha, \
                 alejándose por el río.";
@@ -1478,16 +1498,17 @@ function muertePorNarco() {
 	document.getElementById( "dvActions" ).style.display = "none";
     document.getElementById( "dvObjects" ).style.display = "none";
 
-	ctrl.terminaJuego( "- ¡Eh!¿Qué haces tú aquí?<br> \
-                Son una banda de criminales. Te das cuenta \
-                de que han estado utilizando la casa abandonada para almacenar \
-                los cargamentos que traen por el río. ¿De ahí la fama de la casa? \
-			    Los narcos te rodean en todas direcciones. \
-			    Humberto, el jefe, toma la palabra.<br>\
-			    - Bien, bien,... Me temo que no nos gustan mucho los \
-			    visitantes por aquí... tendremos que dejar clara \
-			    nuestra falta de hospitalidad.",
-			   "res/abandonada.jpg" );
+	ctrl.terminaJuego( "<p>- ¡Eh!¿Qué haces tú aquí?<br> \
+                            Son una banda de criminales. Te das cuenta \
+                            de que han estado utilizando la casa abandonada para almacenar \
+                            los cargamentos que traen por el río. ¿De ahí la fama de la casa? \
+                            Los narcos te rodean en todas direcciones. \
+                            Humberto, el jefe, toma la palabra.<br>\
+                            - Bien, bien,... Me temo que no nos gustan mucho los \
+                            visitantes por aquí... tendremos que dejar clara \
+                            nuestra falta de hospitalidad.</p>\
+                            <p>Logros:<br/>" + ctrl.logros.completadosComoTexto() + "</p>",
+                        "res/abandonada.jpg" );
 }
 
 var narco1 = ctrl.personas.creaPersona( "Carlos",
@@ -1500,13 +1521,13 @@ narco1.pos = -1;
 narco1.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
                      locLabo, locPasillo, locSotano, locEscalerasInteriores, locSalon ];
 narco1.message = [ "- Manrique, ¿has comprobado la mercancía?",
-                  "Oyes las pisadas de uno al entrar en el pasadizo por la escalera.",
-                  "Se oye a Carlos desde el pasadizo: ¿Vienes, Humberto?",
-		              "Escuchas pisadas dirigiéndose al pasillo.",
-		              "- ¡Joder!¡Alguien ha intentado entrar en el laboratorio!",
-            		  "Uno de los visitantes pasa por las escaleras de camino al salón.",
-            		  "Uno de ellos silba.",
-            		  "Oyes cómo se abre una ventana.",
+                    "Oyes las pisadas de uno al entrar en el pasadizo por la escalera.",
+                    "Se oye a Carlos desde el pasadizo: ¿Vienes, Humberto?",
+                    "Escuchas pisadas dirigiéndose al pasillo.",
+                    "- ¡Joder!¡Alguien ha intentado entrar en el laboratorio!",
+                    "Uno de los visitantes pasa por las escaleras de camino al salón.",
+                    "Uno de ellos silba.",
+                    "Oyes cómo se abre una ventana.",
                 ];
 narco1.ponEnVigilancia = function() {
 	ctrl.ponDaemon(
@@ -1517,7 +1538,7 @@ narco1.ponEnVigilancia = function() {
 			}
 		}
 	);
-}
+};
 
 var narco2 = ctrl.personas.creaPersona( "Manrique",
                     [ "criminal", "narco" ],
@@ -1526,26 +1547,27 @@ var narco2 = ctrl.personas.creaPersona( "Manrique",
 );
 narco2.pos = -1;
 narco2.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
-                     locPasillo, locSotano, locEscalerasInteriores, locCocina, locExterior ];
+                     locPasillo, locSotano, locEscalerasInteriores, locCocina,
+                     locExterior ];
 narco2.message = [ "- Joder, Carlos, ya te dije que sí.",
-                   "Escuchas a otro descender por la escalera exterior.",
-                   "- Deja al jefe en paz...",
-            		   "Ahora son dos los que se han quedado quietos....",
-            		   "- ¡Hay que registrar la casa!, no puede andar lejos.",
-            		   "Otro sube las escaleras arrastrando los pies.",
-            		   "Un ladrillo se rompe, supones que de una patada \
-            		    propinada por uno de ellos.",
-            		   "Se oyen los crujidos del porche al salir uno de ellos \
-            		    al exterior.",
-                 ];
+                    "Escuchas a otro descender por la escalera exterior.",
+                    "- Deja al jefe en paz...",
+                    "Ahora son dos los que se han quedado quietos....",
+                    "- ¡Hay que registrar la casa!, no puede andar lejos.",
+                    "Otro sube las escaleras arrastrando los pies.",
+                    "Un ladrillo se rompe, supones que de una patada \
+                    propinada por alguno de ellos.",
+                    "Se oyen los crujidos del porche \
+                    al salir uno de ellos al exterior." ];
+
 narco2.ponEnVigilancia = function() {
     ctrl.ponAlarma( 5, function() {
       if ( locExterior.has( narco2 ) ) {
         narco2.mueveA( locSalon );
         ctrl.print( "Escuchas a uno de los visitantes entrar \
-                     atropelladamente en el salón.<br>\
-        	     - ¡Hay un coche aparcado ahí fuera!<br>\
-        	     - ¡Manteneos alerta!" );
+                        atropelladamente en el salón.<br>\
+                        - ¡Hay un coche aparcado ahí fuera!<br>\
+                        - ¡Manteneos alerta!" );
       }
 	});
 
@@ -1557,7 +1579,7 @@ narco2.ponEnVigilancia = function() {
 			}
 		}
 	);
-}
+};
 
 
 var narco3 = ctrl.personas.creaPersona( "Humberto",
@@ -1571,16 +1593,16 @@ narco3.recorrido = [ locEmbarcadero, locPasilloEscaleraExterior, locPasillo2,
                      locPasillo, locSotano, locEscalerasInteriores, locSalon, locSalon ];
 
 narco3.message = [ "- Está bien, dejadlo ya. Aún hay que preparar dos envíos \
-                     más.<br>\
+                    más.<br>\
                     Los otros dos responden al unísono:<br>\
                     - De acuerdo, jefe.",
-                   "Supones que siguen todos juntos, aunque solo has oido a dos.",
-                   "Todos reemprenden la marcha por el pasillo.",
-            		   "Alguien camina por el pasillo.",
-            		   "- Calmaos los dos.",
-            		   "Las escaleras crujen bajo el peso de unas fuertes pisadas.",
-            		   "Escuchas moverse el sillón del salón.",
-            		   "Los muelles del sillón emiten un prolongado gemido...",
+                    "Supones que siguen todos juntos, aunque solo has oido a dos.",
+                    "Todos reemprenden la marcha por el pasillo.",
+                    "Alguien camina por el pasillo.",
+                    "- Calmaos los dos.",
+                    "Las escaleras crujen bajo el peso de unas fuertes pisadas.",
+                    "Escuchas moverse el sillón del salón.",
+                    "Los muelles del sillón emiten un prolongado gemido...",
                  ];
 narco3.ponEnVigilancia = function() {
 	ctrl.ponDaemon(
@@ -1591,7 +1613,7 @@ narco3.ponEnVigilancia = function() {
 			}
 		}
 	);
-}
+};
 
 // --- Jugador ---------------------------------------------------------
 var jugador = ctrl.personas.creaPersona( "Alguien",
@@ -1632,47 +1654,46 @@ var objMovil = ctrl.creaObj(
 objMovil.preDrop = function() {
     return "De eso, nada. Quinientos y pico mil puntos que te costó. \
             Y eso que no tiene ni cámara.";
-}
+};
 
 objMovil.preTalk = function() {
     return "Ni Siri, ni Cortana, ni un mísero asistente sin nombre... nada.";
-}
+};
 
 objMovil.preAttack = function() {
     objMovil.mueveA();
     return "Frustrado, lo rompes en mil pedazos lanzándolo con todas tus \
             fuerzas contra el suelo. En fin, ahí van quinientos y pico mil \
             puntos...";
-}
+};
 
 objMovil.preStart = function() {
     return "Ya está encendido, solo que no hay cobertura.";
-}
+};
 
 objMovil.preShutdown = function() {
     return "No veo para qué...";
-}
+};
 
 objBrujula.preAttack = function() {
     return "No te atreves, es demasiado útil.";
-}
+};
 
 objBrujula.preStart = function() {
     return "Siempre está encendida, no es necesario.";
-}
+};
 
 objBrujula.preShutdown = function() {
     return "Como no le saque la pila... además, ¡me perdería!";
-}
+};
 
 objBrujula.preDrop = function() {
     return "No puedes hacer eso: necesitas orientarte.";
-}
+};
 
 objBrujula.preExamine = function() {
-    var loc = ctrl.lugares.devLocActual();
     return objBrujula.desc + " " + actions.getAction( "exits" ).exe();
-}
+};
 
 // Entorno misterioso --------------------------------------------------
 var msgs_misterio = {
@@ -1723,6 +1744,23 @@ ctrl.ponDaemon( "misterio", function() {
 	return;
 });
 
-// Arranque ------------------------------------------------------------
+// Logros ----------------------------------------------------------------------
+ctrl.logros.inserta(
+    "piloto",
+    "Piloto (pilotaste la planeadora)." );
+ctrl.logros.inserta(
+    "curioson",
+    "Curiosón (encontraste los trastos escondidos en el desván)." );
+ctrl.logros.inserta(
+    "ladronzuelo",
+    "Ladronzuelo (forzaste la entrada al labo)." );
+ctrl.logros.inserta(
+    "experimentador",
+    "Experimentador (probaste a tirar cosas por la chimenea)." );
+ctrl.logros.inserta(
+    "limpiador",
+    "Limpiador (comprobaste el polvo acumulado)." );    
+
+// Arranque --------------------------------------------------------------------
 ctrl.personas.cambiaJugador( jugador );
 ctrl.lugares.ponInicio( locExterior );

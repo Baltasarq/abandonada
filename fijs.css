@@ -1,150 +1,218 @@
 /* Default colors and sizes */
+
 body {
-	background-color: black;
-	color: white;
-	font-familiy: serif;
-	font-size: 16pt;
-    cursor: crosshair
+    cursor: crosshair;
+    background-color: black;
+    color: white;
+    font-family: serif;
+    font-size: 16pt;
     margin: 5%;
+    text-indent: 5mm;
+    text-align: justify;
+    text-justify: inter-word
 }
 
-/* Hyperlinks */
-a {
-	color:#77aabb;
-	text-decoration:none;
-    cursor: crosshair;
+.clsAchieved {
+    font-style: italic
+}
+
+.firstP {
+    text-indent: 2mm
+}
+
+
+/* Hiperenlaces por defecto */
+
+a:link,
+a:visited {
+    font-weight: bold;
+    color: olive;
+    text-decoration: none;
 }
 
 a:hover {
-	color:#77aaff;
-	text-decoration:none
-	cursor: crosshair;
+    color: yellow;
+    text-decoration: none;
+    text-shadow: 0 1px gray;
 }
 
-a:visited {
-	color:#77aabb;
-	text-decoration:none
-	cursor: crosshair;
+
+/* Hyperlinks: movement */
+
+a.clsLinkMov:link,
+a.clsLinkMov:visited {
+    font-weight: bold;
+    color: royalblue;
+    text-decoration: none;
 }
+
+a.clsLinkMov:hover {
+    color: cyan;
+    text-decoration: none;
+}
+
+
+/* Hyperlinks: object actions */
+
+a.clsLinkObj:link,
+a.clsLinkObj:visited {
+    font-weight: bold;
+    color: olive;
+    text-decoration: none;
+}
+
+a.clsLinkObj:hover {
+    color: yellow;
+    text-decoration: none;
+}
+
+
+/* Hyperlinks: pnj actions */
+
+a.clsLinkPnj:link,
+a.clsLinkPnj:visited {
+    font-weight: bold;
+    color: purple;
+    text-decoration: none
+}
+
+a.clsLinkPnj:hover {
+    color: magenta;
+    text-decoration: none;
+}
+
 
 /* Intro div, before game */
+
 #dvIntro {
-	text-align: center;
+    text-align: center;
     display: block
 }
 
 #hrIntroSeparator {
-	color: #000044;
-	background-color: #000044;
-	height: 3px;
-	border: 0
+    color: #000044;
+    background-color: #000044;
+    height: 3px;
+    border: 0
 }
 
 #btBoot {
-	color: #770000;
-	font-weight: bold
+    color: #770000;
+    font-weight: bold
 }
 
+
 /* Game title */
+
 #dvTitle {
-    width:70%;
+    width: 70%;
     margin: 5%;
-	font-size: 18pt;
-	color: lightgray
+    font-size: 18pt;
+    color: lightgray
 }
 
 @media screen and (max-width: 800px) {
-    #dvTitle, #dvId {
+    #dvTitle,
+    #dvId {
         display: none !important;
     }
 }
 
+
 /* Game div */
+
 #dvFi {
-	width:80%;
+    width: 80%;
     margin-left: 10%;
     margin-right: 10%;
 }
 
 #hrFiSeparator {
-	color: #000044;
-	background-color: #000044;
-	height: 3px;
-	border: 0
+    color: #000044;
+    background-color: #000044;
+    height: 3px;
+    border: 0
 }
+
 
 /* Name of the room */
+
 #dvId {
-	width: 100%;
-	color: #77aaff;
-    font-familiy:Verdana,Arial,Helvetica;
-	font-style: italic;
-	font-weight: bold
+    width: 100%;
+    color: #77aaff;
+    font-style: italic;
+    font-weight: bold
 }
+
 
 /* Image */
+
 #dvPic {
-	width: 100%;
-	height: 40%;
-	text-align: center
+    width: 100%;
+    height: 40%;
+    text-align: center
 }
+
 
 /* Description text for current room */
-#dvDesc  {
-	color: green;
-	width:100%;
-    font-familiy: Verdana,Arial,Helvetica;
-	font-size:22px;
-	text-align: justify;
+
+#dvDesc {
+    color: green;
+    width: 100%;
+    font-size: 22px;
+    text-align: justify;
 }
 
+
 /* Game's answer text */
+
 #dvAnswer {
-	width:100%;
-	height:100px;
-    font-familiy: Verdana,Arial,Helvetica;
-	font-size:20px;
+    width: 100%;
+    height: 100px;
+    font-size: 20px;
     overflow-y: auto;
 }
 
+
 /* Input section, prompt, icons... */
+
 #dvInput {
-	color:white;
-	background-color:black;
-	width:100%;
-	font-familiy: Verdana,Arial,Helvetica;
-	font-size:20px;
+    color: white;
+    background-color: black;
+    width: 100%;
+    font-size: 20px;
 }
 
-#edInput{
-	width: 90%;
-	color: khaki;
-	background-color: black;
-	border: none;
-	border: 1px dotted gray;
-	border-radius: 10px;
-	font-family: monospace;
+#edInput {
+    width: 90%;
+    color: khaki;
+    background-color: black;
+    border: none;
+    border: 1px dotted gray;
+    border-radius: 10px;
+    font-family: monospace;
     font-size: 14pt;
-	padding: 6px
+    padding: 6px
 }
+
 
 /* Error section, this is normally not seen by players */
+
 #dvError {
-	color:white;
-	background-color:red;
-	width:100%;
-    font-familiy:Verdana,Arial,Helvetica;
-	font-size:24pt;
+    color: white;
+    background-color: red;
+    width: 100%;
+    font-size: 24pt;
 }
 
 #dvObjects {
-    font-familiy: monospace;
+    font-family: monospace;
     font-size: 16pt;
     text-align: center;
     color: white;
 }
 
 #dvActions {
-	cursor: crosshair;
+    cursor: crosshair;
     display: block
 }
